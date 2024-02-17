@@ -1,6 +1,6 @@
 // openai request handling
 
-async function generateMessage(prompt) {
+export async function generateMessage(prompt) {
 
   if (!prompt || typeof prompt !== 'string') {
     return 'Please provide a valid prompt.';
@@ -31,5 +31,4 @@ async function generateMessage(prompt) {
   }
 }
 
-// Export the function
-module.exports = generateMessage;
+
