@@ -1,4 +1,7 @@
-        const COLOR_PRIMARY = 0x333CFF;      //box bg
+import {generateMessage} from './openai.js';
+
+
+const COLOR_PRIMARY = 0x333CFF;      //box bg
         const COLOR_LIGHT = 0x03a1fc;        //box border
         const COLOR_DARK = 0x0362fc;         //box accent
 
