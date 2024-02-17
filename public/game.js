@@ -11,6 +11,7 @@
                     url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
                     sceneKey: 'rexUI'
                 });
+                this.load.image('dude', 'assets/dude.png');
         
                 //arrow that continues text if too long
                 this.load.image('nextPage', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/assets/images/arrow-down-left.png');
@@ -21,7 +22,7 @@
             create() {
                 this.add.image(400, 300, 'bgImage');
                 // this.add.image(500, 3200, 'npc');
-
+                this.add.image(400, 300, 'dude');
                 // top box w/ no fixed width or height
                 createTextBox(this, 100, 100, {
                     wrapWidth: 500,
