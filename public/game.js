@@ -13,12 +13,12 @@ const allUserSent = [];              // Stores all User sentences
 const startPrompt = [                // Starting prompt for conversation()
     {
         role: "user",
-        content: "Provide a conversation starter for someone speaking to a child"
+        content: "Provide a conversation starter for someone speaking to a child. Start the prompt with My name is Gnomey! If the conversation ever takes an inappropriate turn, attempt to guide the child into a better conversation."
     }
 ];
 
 let converLen = 0;
-const maxConverLen = 4; // Determines conversation length in conversation()
+const maxConverLen = 8; // Determines conversation length in conversation()
 
 var fairyText;
 var charText;
@@ -90,7 +90,7 @@ class Demo extends Phaser.Scene {
         
 
         dialog = CreateFeedbackDialog(this)
-            .setPosition(window.innerWidth / 2, window.innerHeight*5/6)
+            .setPosition(window.innerWidth / 2, window.innerHeight*6/7)
             .setOrigin(0.5,0)
             .layout()
             //.popUp(500)
@@ -116,7 +116,7 @@ conversation();
 var CreateFeedbackDialog = function (scene, config) {
     var dialog = scene.rexUI.add.dialog({
         space: {
-            left: 20, right: 20, top: 20, bottom: -20,
+            left: 20, right: 20, top: 8, bottom: -20,
             title: 10,
             content: 10,
             action: 30
@@ -186,8 +186,6 @@ var CreateTitle = function (scene) {
 }
 var CreateButton = function (scene) {
     return scene.rexUI.add.label({
-        x:100,
-        y:400,
         space: { left: 10, right: 10, top: 10, bottom: 10, },
 
         background: scene.rexUI.add.roundRectangle({
