@@ -4,3 +4,21 @@ body, html {
   padding: 0;
   overflow: hidden;
 }
+
+#button{
+    position: absolute;
+    display: block;
+    width: 150px;
+    height: 25px;
+    background: linear-gradient(to top, rgb(0, 0, 255), rgb(83, 83, 255), rgb(180, 180, 255));
+    text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff;
+    padding: 10px;
+    text-align: center;
+    font-size: 18px;
+    text-decoration: none;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    margin: 0 auto;
+    border: 2px solid white;
+}
