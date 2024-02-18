@@ -18,10 +18,10 @@ export async function grader(AIArray, userArray) {
         intGradesPrompt = intGradesPrompt + defaultString;
         const aiIntGrades = await generateGrade(intGradesPrompt);          // Calls API with combined string
         const aiComments = await generateGrade(improvementPrompt);         // Calls API with combined string
+        return [aiComments, aiIntGrades]; 
     } catch (error) {
         console.error("Error:", error);
-    }
-    return [aiComments, aiIntGrades];                                  // Returns paragraph describing grades
+    }                                 // Returns paragraph describing grades
 }
 
 let userArray = ["Im good. I love trains!", "the locomotive because it is fast"];           // TEST INPUT - DELETE
