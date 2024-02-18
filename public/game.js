@@ -1,4 +1,6 @@
-// import {generateMessage} from './openai.js';
+import {generateMessage} from './openai.js';
+
+//const { generateTestMessage } = require("./openai");
 
 const COLOR_PRIMARY = 0x333CFF;      //box bg
 const COLOR_LIGHT = 0x03a1fc;        //box border
@@ -20,32 +22,32 @@ class Demo extends Phaser.Scene {
     }
 
     create() {
-        
         const content = 'test string';
+        var genContent;
+        async function getMessage () {
+            const value = await generateMessage('TEST');
+            console.log(value);
+            return value;
+        }
+        getMessage().then((value) => {
+            genContent = value;
+            console.log(genContent);
+            createTextBox(this, 100, 400, {
+                wrapWidth: 500,
+                fixedWidth: 500,
+                fixedHeight: 65,
+                title: 'Title',
+                alpha: 0.75,
+            })
+                .start(genContent, 50);
+        });
+        //var genContent = getMessage();
         var imageWidth = this.textures.get('bgImage').getSourceImage().width;
-        var imageHeight = this.textures.get('bgImage').getSourceImage().height;
-        console.log(imageWidth);
-        console.log(window.innerWidth);
-        console.log(window.innerWidth/imageWidth);
         this.add.image(window.innerWidth / 2, window.innerHeight / 2, 'bgImage').setScale(window.innerWidth/imageWidth);
         this.add.image(500, 300, 'npc').setScale(0.2);
-        //this.add.image(400, 300, 'dude');
-        // top box w/ no fixed width or height
-        createTextBox(this, 100, 100, {
-            wrapWidth: 500,
-            alpha: 0.5,
-        })
-            .start(content, 50);
 
         //bottom box
-        createTextBox(this, 100, 400, {
-            wrapWidth: 500,
-            fixedWidth: 500,
-            fixedHeight: 65,
-            title: 'Title',
-            alpha: 0.75,
-        })
-            .start(content, 50);
+        
     }
 
     update() { }
@@ -157,7 +159,7 @@ var getBBcodeText = function (scene, wrapWidth, fixedWidth, fixedHeight) {
 var config = {
     type: Phaser.AUTO,
     scale: {
-        mode: Phaser.Scale.AUTO,
+        mode: Phaser.Scale.RESIZE,
         width: window.innerWidth,
         height: window.innerHeight
     }, 
