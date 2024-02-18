@@ -163,6 +163,8 @@ var config = {
         width: window.innerWidth,
         height: window.innerHeight
     }, 
+    backgroundColor: "red",
+    
     scene: Demo
 };
 
