@@ -67,11 +67,6 @@ class Demo extends Phaser.Scene {
             charText.setOrigin(0.5, 0);
             charText.layout();
 
-        // Link functionality
-        label.on('pointerdown', function () {
-            window.location.href = 'https://www.google.com';
-        });
-
         textArea = this.rexUI.add.textArea({
             x: window.innerWidth*0.5, 
             y: window.innerHeight*0.5,
@@ -132,12 +127,6 @@ class Demo extends Phaser.Scene {
         layout()
         .setVisible(false);
 
-        
-
-        button.on('pointerdown', function () {
-            window.location.href = 'index.html';
-        });
-        
 
             // Defines animations
         this.anims.create({
