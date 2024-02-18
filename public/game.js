@@ -13,7 +13,7 @@ const allUserSent = [];              // Stores all User sentences
 const startPrompt = [                // Starting prompt for conversation()
     {
         role: "user",
-        content: "Provide a conversation starter for someone speaking to a child. Start the prompt with My name is Gnomey! If the conversation ever takes an inappropriate turn, attempt to guide the child into a better conversation."
+        content: "Provide a conversation starter for someone speaking to a child. Start the prompt with My name is Gnomey! If the conversation ever takes an inappropriate turn, attempt to guide the child into a better conversation. try to lean towards talking about their life, how their day was, etc."
     }
 ];
 
@@ -28,6 +28,7 @@ var isTextInputted = 0;
 var char_sprite;
 var girl_sprite;
 var fairy_sprite;
+var textArea;
 
 
 class Demo extends Phaser.Scene {
@@ -66,6 +67,67 @@ class Demo extends Phaser.Scene {
             .start(content, 50);
             charText.setOrigin(0.5, 0);
             charText.layout();
+
+        textArea = this.rexUI.add.textArea({
+            x: window.innerWidth*0.5, 
+            y: window.innerHeight*0.5,
+            
+            width: window.innerWidth*0.8,
+            height: window.innerHeight*0.8,
+            background: this.rexUI.add.roundRectangle(0, 0, 2, 2, 0, COLOR_PRIMARY),
+
+            // text: this.add.text(),
+            text: this.rexUI.add.BBCodeText(),
+            // textMask: true,
+
+            slider: {
+                track: this.rexUI.add.roundRectangle(0, 0, 20, 10, 10, COLOR_DARK),
+                thumb: this.rexUI.add.roundRectangle(0, 0, 0, 0, 13, COLOR_LIGHT),
+            },
+
+            space: {
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 0,
+
+                text: 10,
+                // text: {
+                //     top: 20,
+                //     bottom: 20,
+                //     left: 20,
+                //     right: 20,
+                // },
+                header: 0,
+                footer: 0,
+            },
+
+            mouseWheelScroller: {
+                focus: false,
+                speed: 0.1
+            },
+
+            header: this.rexUI.add.label({
+                height: 30,
+
+                orientation: 0,
+                background: this.rexUI.add.roundRectangle(0, 0, 20, 20, 0, COLOR_DARK),
+                text: this.add.text(0, 0, "Let's go over what you said!"),
+            }),
+
+            footer: this.rexUI.add.label({
+                height: 30,
+
+                orientation: 0,
+                background: this.rexUI.add.roundRectangle(0, 0, 20, 20, 0, COLOR_DARK),
+                text: this.add.text(0, 0, ''),
+            }),
+
+            content:'',
+        }).
+        layout()
+        .setVisible(false);
+        
 
             // Defines animations
         this.anims.create({
@@ -290,8 +352,16 @@ async function conversation() {
         averageGrade += parseInt(numbers[i * 3 - 2]);
     }
     averageGrade = averageGrade / max;
+
+    let tempStr = provGrade + "\n\n Average Grade:" + averageGrade;
+
+    textArea.setVisible(true);
+    textArea.setText(tempStr);
+    dialog.setVisible(false);
+
     return [allAISent, allUserSent, averageGrade];          // Outputs array of all AI sentences, array of user sentences, and the average user sentence score
 }
+
 // Updates main textbox with animation
 function updateTextBox(textBox, newText) {
     let currentIndex = 0;
@@ -320,6 +390,7 @@ var createTextBox = function (scene, x, y, config) {
     var titleText = GetValue(config, 'title', undefined);
     var alphaValue = GetValue(config, 'alpha', 0);
     var iconImg = GetValue(config, 'icon', undefined);
+    var lines = GetValue(config, 'lines', 3);
 
 
     var textBox = scene.rexUI.add.textBox({
@@ -328,7 +399,7 @@ var createTextBox = function (scene, x, y, config) {
 
         background: scene.rexUI.add.roundRectangle({ radius: 20, color: COLOR_PRIMARY, strokeColor: COLOR_LIGHT, strokeWidth: 2 }).setAlpha(alphaValue),
 
-        text: getBBcodeText(scene, wrapWidth, fixedWidth, fixedHeight),
+        text: getBBcodeText(scene, wrapWidth, fixedWidth, fixedHeight, lines),
 
         action: scene.add.image(0, 0, 'nextPage').setTint(COLOR_LIGHT).setVisible(false),
 
@@ -389,18 +460,18 @@ var createTextBox = function (scene, x, y, config) {
     return textBox;
 }
 
-var getBuiltInText = function (scene, wrapWidth, fixedWidth, fixedHeight) {
+var getBuiltInText = function (scene, wrapWidth, fixedWidth, fixedHeight, lines) {
     return scene.add.text(0, 0, '', {
             fontSize: '20px',
             wordWrap: {
                 width: wrapWidth
             },
-            maxLines: 3
+            maxLines: lines
         })
         .setFixedSize(fixedWidth, fixedHeight);
 }
 
-var getBBcodeText = function (scene, wrapWidth, fixedWidth, fixedHeight) {
+var getBBcodeText = function (scene, wrapWidth, fixedWidth, fixedHeight, lines) {
     return scene.rexUI.add.BBCodeText(0, 0, '', {
         fixedWidth: fixedWidth,
         fixedHeight: fixedHeight,
@@ -410,7 +481,7 @@ var getBBcodeText = function (scene, wrapWidth, fixedWidth, fixedHeight) {
             mode: 'word',
             width: wrapWidth
         },
-        maxLines: 3
+        maxLines: lines
     })
 }
 
