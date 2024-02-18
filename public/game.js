@@ -4,11 +4,14 @@ import {preload} from '/preload.js';
 const COLOR_PRIMARY = 0x333CFF;      //box bg
 const COLOR_LIGHT = 0x03a1fc;        //box border
 const COLOR_DARK = 0x0362fc;         //box accent
+var fairyText;
+var dudeText;
+
 class Demo extends Phaser.Scene {
     preload = preload;
 
     create() {
-        const content = 'test string';
+        const content = '';
         var imageWidth = this.textures.get('bgImage').getSourceImage().width;
         var imageHeight = this.textures.get('bgImage').getSourceImage().height;
         console.log(imageWidth);
@@ -19,28 +22,33 @@ class Demo extends Phaser.Scene {
         this.add.image(700, 340, 'npc_1').setScale(0.45);
         //this.add.image(400, 300, 'dude');
         // top box w/ no fixed width or height
-        createTextBox(this, 100, 100, {
+        fairyText = createTextBox(this, 100, 100, {
             wrapWidth: 500,
             alpha: 0.5,
-            // icon: 'npc_face',
         })
             .start(content, 50);
 
         //bottom box
-        createTextBox(this, 100, 400, {
+        dudeText = createTextBox(this, 100, 400, {
             wrapWidth: 500,
             fixedWidth: 500,
             fixedHeight: 65,
-            title: 'Title',
+            title: 'Dude',
             alpha: 0.75,
         })
             .start(content, 50);
+        
+        this.add.image(150, 150, 'fairy').setScale(1.1);
     }
 
-    update() { }
+    update() {
+        fairyText.text = 'updated text';
+        
+    }
 }
 
 const GetValue = Phaser.Utils.Objects.GetValue;
+
 var createTextBox = function (scene, x, y, config) {
     var wrapWidth = GetValue(config, 'wrapWidth', 0);
     var fixedWidth = GetValue(config, 'fixedWidth', 0);
@@ -55,9 +63,6 @@ var createTextBox = function (scene, x, y, config) {
         y: y,
 
         background: scene.rexUI.add.roundRectangle({ radius: 20, color: COLOR_PRIMARY, strokeColor: COLOR_LIGHT, strokeWidth: 2 }).setAlpha(alphaValue),
-
-        // icon: scene.rexUI.add.roundRectangle({ radius: 20, color: COLOR_DARK }),
-        icon: scene.add.image(150,150,"npc_face").setScale(0.5),
 
         text: getBBcodeText(scene, wrapWidth, fixedWidth, fixedHeight),
 
@@ -157,4 +162,3 @@ var config = {
 };
 
 var game = new Phaser.Game(config);
-// console.log(generateMessage);
