@@ -19,7 +19,8 @@ body, html {
   
 }
 
-.start{
+.button{
+    position: absolute;
     display: block;
     width: 115px;
     height: 25px;
@@ -29,5 +30,16 @@ body, html {
     border-radius: 5px;
     color: white;
     font-weight: bold;
+}
+
+#start { 
     line-height: 25px;
+    left:    89vh;
+    bottom:   15vh;
+}
+
+#about {
+    position: absolute;
+    top: 0vh;
+    right: 0vh;
 }
