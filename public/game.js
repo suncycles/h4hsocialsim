@@ -6,17 +6,37 @@ const COLOR_PRIMARY = 0x333CFF;      //box bg
 const COLOR_LIGHT = 0x03a1fc;        //box border
 const COLOR_DARK = 0x0362fc;         //box accent
 
+const allAISent = [];                // Stores all AI sentences
+const allUserSent = [];              // Stores all User sentences
+
+const startPrompt = [                // Starting prompt
+    {
+        role: "user",
+        content: "Provide a conversation starter for someone speaking to a child"
+    }
+];
+
+let converLen = 0;
+const maxConverLen = 4;
+
 var fairyText;
 var charText;
+var userText;
+
 
 class Demo extends Phaser.Scene {
     preload = preload;
-
+    constructor() {
+        super({
+            key: 'examples'
+        })
+    }
     create() {
         const content = '';
         var imageWidth = this.textures.get('bgImage').getSourceImage().width;
         this.add.image(window.innerWidth / 2, window.innerHeight / 2, 'bgImage').setScale(window.innerWidth/imageWidth);
-        this.add.image(700, 350, 'char').setScale(0.45);
+        this.add.image(window.innerWidth / 2, window.innerHeight / 2, 'char').setScale(0.45);
+        //this.add.image(700, 340, 'npc_1').setScale(0.45);
 
         // top box w/ no fixed width or height
         fairyText = createTextBox(this, 100, 100, {
@@ -26,21 +46,165 @@ class Demo extends Phaser.Scene {
             .start(content, 50);
             this.add.image(150, 150, 'fairy').setScale(1.1);
         //bottom box
-        charText = createTextBox(this, 100, 400, {
+        charText = createTextBox(this, window.innerWidth / 2, window.innerHeight*2/3, {
             wrapWidth: 500,
-            fixedWidth: 500,
+            fixedWidth: window.innerWidth/2.5,
             fixedHeight: 65,
             title: 'Dude',
             alpha: 0.75,
         })
             .start(content, 50);
-        
+            charText.setOrigin(0.5, 0);
+            charText.layout();
+
+            var print = this.add.text(0, 0, '');
+
+        var dialog = CreateFeedbackDialog(this)
+            .setPosition(window.innerWidth / 2, window.innerHeight*5/6)
+            .setOrigin(0.5,0)
+            .layout()
+            .popUp(500)
+            .on('send', function (content) {
+                userText = content;
+            })
+            .on('close', function () {
+                dialog.scaleDownDestroy(500);
+            })
+            .on('restart', function() {
+                dialog.popUp(dialog, 300);
+            })
         
     }
 
     update() {
-        
+        //conversation();
     }
+}
+var CreateFeedbackDialog = function (scene, config) {
+    var dialog = scene.rexUI.add.dialog({
+        space: {
+            left: 20, right: 20, top: 20, bottom: -20,
+            title: 10,
+            content: 10,
+            action: 30
+
+        },
+
+        background: scene.rexUI.add.roundRectangle({
+            radius: 20, color: COLOR_PRIMARY
+        }),
+
+        title: CreateTitle(scene).setText('Response'),
+
+        content: CreateCanvasInput(scene),
+
+        actions: [
+            CreateButton(scene).setText('Send'),
+        ],
+
+        expand: {
+            title: false,
+        }
+    })
+
+    dialog
+        .on('action.click', function (button, index, pointer, event) {
+            if (index === 0) { // Send button                
+                var content = dialog.getElement('content').text;
+                dialog.emit('send', content);
+            }
+
+            dialog.emit('close');
+        });
+
+
+    dialog.getElement('content').open();
+
+    return dialog;
+}
+var CreateCanvasInput = function (scene) {
+    return scene.rexUI.add.canvasInput({
+        width: window.innerWidth / 2.3, height: 20,
+        background: {
+            color: '#0362fc',
+
+            stroke: null,
+            'focus.stroke': '#7b5e57',
+        },
+
+        style: {
+            fontSize: 20,
+            backgroundBottomY: 1,
+            backgroundHeight: 20,
+
+            'cursor.color': 'black',
+            'cursor.backgroundColor': 'white',
+        },
+
+        selectAll: true,
+        textArea: true,
+        maxLength: 500,
+    })
+}
+var CreateTitle = function (scene) {
+    return scene.rexUI.add.label({
+        text: scene.add.text(0, 0, '', { fontSize: 20 }),
+    })
+}
+var CreateButton = function (scene) {
+    return scene.rexUI.add.label({
+        x:100,
+        y:400,
+        space: { left: 10, right: 10, top: 10, bottom: 10, },
+
+        background: scene.rexUI.add.roundRectangle({
+            radius: 10, color: COLOR_DARK, strokeColor: COLOR_LIGHT
+        }),
+
+        text: scene.add.text(0, 0, '', { fontSize: 20 }),
+    })
+}
+
+async function conversation() {
+    try {
+        while (converLen < maxConverLen) {
+            const response = await generateMessage(startPrompt);
+            const provSentence = response[0].message.content;
+            allAISent[converLen] = provSentence;
+
+            updateTextBox(charText, provSentence); 
+            console.log(provSentence);
+
+            const newAssistSent = { // Adds AI sentence to prompt JSON to remember conversation
+                role: "assistant",
+                content: provSentence
+            };
+
+            dialog.emit('restart');
+            const closePromise = new Promise(resolve => {
+                dialog.once('close', () => {
+                    resolve();
+                });
+            });
+            await closePromise;
+            const userSent = userText;
+
+            allUserSent[converLen] = userSent;
+
+            const newUserSent = { // Adds user sentence to prompt JSON to remember conversation
+                role: "user",
+                content: userSent
+            };
+
+            startPrompt.push(newAssistSent);
+            startPrompt.push(newUserSent);                      // Combines all sentences for openai.js call
+
+            converLen++;
+        }
+    } catch (error) {
+        console.error("Error:", error);
+    }
+    return [allAISent, allUserSent]; // Access with const [array1, array2] = conversation();
 }
 
 function updateTextBox(textBox, newText) {
