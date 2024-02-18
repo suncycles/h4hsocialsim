@@ -1,5 +1,6 @@
 import {generateMessage} from '/openai.js';
 import {preload} from '/preload.js';
+import {grader} from '/AI-GraderCall.js';
 
 const COLOR_PRIMARY = 0x333CFF;      //box bg
 const COLOR_LIGHT = 0x03a1fc;        //box border
@@ -167,3 +168,7 @@ var config = {
 };
 
 var game = new Phaser.Game(config);
+
+let userArray = ["Im good. I love trains!", "the locomotive because it is fast"];           // TEST INPUT - DELETE
+let AIArray = ["Hi how are you?", "whats your favorite train", "thats my favorite too!"];
+grader(AIArray, userArray);

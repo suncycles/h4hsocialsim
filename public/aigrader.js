@@ -1,5 +1,5 @@
 // Called by GraderCall.js to grade user responses
-async function generateGrade(sentToGrade) {
+export async function generateGrade(sentToGrade) {
     const apiKey = process.env.OPENAI_API_KEY;          // Key is saved locally
   
     try {

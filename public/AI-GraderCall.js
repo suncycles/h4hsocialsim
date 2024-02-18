@@ -1,7 +1,7 @@
 // Combines user and AI responses and provides them to API in aigrader.js
 import {generateGrade} from '/aigrader.js';
 
-async function grader(AIArray, userArray) {
+export async function grader(AIArray, userArray) {
     // Specifies desired response from openAI API
     let improvementPrompt = "I will provide a list of: a brief set of provided sentences, followed by a response to that sentence. Grade the sentences from 1 to 10 based on social appropriateness with a brief explaination for each.\n";
     let intGradesPrompt = "I will provide a list of: a brief set of provided sentences, followed by a response to that sentence. Provide only a list of grades of the evenly-ordered set of sentences from 1 to 10 based on social appropriateness"
