@@ -18,7 +18,7 @@ const startPrompt = [                // Starting prompt for conversation()
 ];
 
 let converLen = 0;
-const maxConverLen = 3; // Determines conversation length in conversation()
+const maxConverLen = 4; // Determines conversation length in conversation()
 
 var fairyText;
 var charText;
