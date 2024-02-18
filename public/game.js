@@ -168,7 +168,3 @@ var config = {
 };
 
 var game = new Phaser.Game(config);
-
-let userArray = ["Im good. I love trains!", "the locomotive because it is fast"];           // TEST INPUT - DELETE
-let AIArray = ["Hi how are you?", "whats your favorite train", "thats my favorite too!"];
-grader(AIArray, userArray);
