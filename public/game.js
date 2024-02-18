@@ -1,6 +1,7 @@
 import {generateMessage} from '/openai.js';
 import {preload} from '/preload.js';
 import {vw} from '/helper.js';
+import {fairySentence} from '/fairyHelper.js';
 
 const COLOR_PRIMARY = 0x333CFF;      //box bg
 const COLOR_LIGHT = 0x03a1fc;        //box border
@@ -213,13 +214,12 @@ async function conversation() {
             allAISent[converLen] = provSentence;
 
             updateTextBox(charText, provSentence);
-            console.log(provSentence);
 
             const newAssistSent = {
                 role: "assistant",
                 content: provSentence
             };
-            
+            let fairyHelp = fairySentence(provSentence);                                       // Fairy suggested sentence
             const closePromise = new Promise(resolve => {
                 const interval = setInterval(() => {
                     if (isTextInputted === 1) {
