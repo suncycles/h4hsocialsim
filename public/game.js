@@ -54,7 +54,7 @@ class Demo extends Phaser.Scene {
 
         //main dialogue box
         charText = createTextBox(this, window.innerWidth / 2, window.innerHeight*4/6, {
-            wrapWidth: window.innerWidth/2.5,
+            wrapWidth: window.innerWidth/2,
             fixedWidth: window.innerWidth/2.5,
             fixedHeight: 65,
             title: 'Gnomey',
@@ -224,14 +224,14 @@ async function conversation() {
                 const interval = setInterval(() => {
                     if (isTextInputted === 1) {
                         console.log("text inputted!");
+                        
                         clearInterval(interval);
                         resolve();
                     }
                 }, 100); // Check every 100 milliseconds
             });
-            char_sprite.play('animateChar');
             await closePromise; // Wait for user input
-
+            
             const userSent = userTextHolder;
             allUserSent[converLen] = userSent;
 
@@ -276,6 +276,10 @@ async function conversation() {
 // Updates main textbox with animation
 function updateTextBox(textBox, newText) {
     let currentIndex = 0;
+    if(textBox = charText) {
+        char_sprite.play('animateChar');
+    }
+
     let interval = setInterval(() => {
         textBox.text = newText.substring(0, currentIndex);
         currentIndex++;
@@ -283,6 +287,7 @@ function updateTextBox(textBox, newText) {
             clearInterval(interval);
         }
     }, 50);
+    
     textBox.layout();
 }
 
