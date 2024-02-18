@@ -39,17 +39,17 @@ class Demo extends Phaser.Scene {
     }
     create() {
         const content = '';
+        var keyboard = this.input.keyboard;
         var imageWidth = this.textures.get('bgImage').getSourceImage().width;
         this.add.image(window.innerWidth / 2, window.innerHeight / 2, 'bgImage').setScale(window.innerWidth/imageWidth);
         char_sprite = this.add.sprite(window.innerWidth/2, window.innerHeight / 2, 'char_1').setScale(0.4);
         //girl_sprite = this.add.sprite(window.innerWidth / 4, window.innerHeight / 2, 'girl_1').setScale(0.55);
         fairy_sprite = this.add.sprite(window.innerWidth - vw(5), vw(5), 'fairy1').setScale(1);
 
-
         // fairy dialogue box
         fairyText = createTextBox(this, window.innerWidth /2, vw(1), {
             fixedWidth: window.innerWidth /3,
-            fixedHeight: 45,
+            fixedHeight: 65,
             wrapWidth: window.innerWidth /3,
             alpha: 0.5,
         })
@@ -57,8 +57,8 @@ class Demo extends Phaser.Scene {
 
         //main dialogue box
         charText = createTextBox(this, window.innerWidth / 2, window.innerHeight*4/6, {
-            wrapWidth: window.innerWidth/1.5,
-            fixedWidth: window.innerWidth/1.5,
+            wrapWidth: window.innerWidth/1.25,
+            fixedWidth: window.innerWidth/1.25,
             fixedHeight: 65,
             title: 'Gnomey',
             alpha: 0.75,
@@ -115,17 +115,18 @@ class Demo extends Phaser.Scene {
             .on('restart', function() {
                 dialog.setVisible(true);
             })
-            .setAlpha(0.75)
+            .setAlpha(0.75);
         
     }
 
     update() {
+        
     }
 }
 conversation();
 
 // Creates User Input Box
-var CreateFeedbackDialog = function (scene, config) {
+var CreateFeedbackDialog = function (scene) {
     var dialog = scene.rexUI.add.dialog({
         space: {
             left: 20, right: 20, top: 8, bottom: -20,
@@ -319,8 +320,6 @@ var createTextBox = function (scene, x, y, config) {
     var fixedHeight = GetValue(config, 'fixedHeight', 0);
     var titleText = GetValue(config, 'title', undefined);
     var alphaValue = GetValue(config, 'alpha', 0);
-    var iconImg = GetValue(config, 'icon', undefined);
-
 
     var textBox = scene.rexUI.add.textBox({
         x: x,
@@ -328,7 +327,7 @@ var createTextBox = function (scene, x, y, config) {
 
         background: scene.rexUI.add.roundRectangle({ radius: 20, color: COLOR_PRIMARY, strokeColor: COLOR_LIGHT, strokeWidth: 2 }).setAlpha(alphaValue),
 
-        text: getBBcodeText(scene, wrapWidth, fixedWidth, fixedHeight),
+        text: getText(scene, wrapWidth, fixedWidth, fixedHeight),
 
         action: scene.add.image(0, 0, 'nextPage').setTint(COLOR_LIGHT).setVisible(false),
 
@@ -337,11 +336,7 @@ var createTextBox = function (scene, x, y, config) {
         separator: (titleText) ? scene.rexUI.add.roundRectangle({ height: 3, color: COLOR_DARK }) : undefined,
 
         space: {
-            left: 20, right: 20, top: 20, bottom: 20,
-
-            icon: 10, text: 10,
-
-            separator: 6,
+            left: 20, right: 20, top: 20, bottom: 20, text: 10, separator: 6,
         },
 
         align: {
@@ -351,56 +346,10 @@ var createTextBox = function (scene, x, y, config) {
         .setOrigin(0)
         .layout();
 
-    textBox.setInteractive()
-        .on('pointerdown', function () {
-            var icon = this.getElement('action').setVisible(false);
-            this.resetChildVisibleState(icon);
-            console.log(this.isTyping);
-            if (this.isTyping) {
-                this.stop(true);
-            } else if (!this.isLastPage) {
-                this.typeNextPage();
-            } 
-        }, textBox)
-        .on('pageend', function () {
-            if (this.isLastPage) {
-                return;
-            }
-            
-            //drop down arrow to skip
-            var icon = this.getElement('action').setVisible(true);
-            this.resetChildVisibleState(icon);
-            icon.y -= 30;
-            var tween = scene.tweens.add({
-                targets: icon,
-                y: '+=30', // '+=100'
-                ease: 'Bounce', // 'Cubic', 'Elastic', 'Bounce', 'Back'
-                duration: 500,
-                repeat: 0, // -1: infinity
-                yoyo: false
-            });
-            var keyInput = scene.input.keyboard.addKey(13);
-            keyInput.on('down', emit('send'));
-        }, textBox)
-        .on('complete', function () {
-            console.log('all pages typing complete')
-        })
-
     return textBox;
 }
 
-var getBuiltInText = function (scene, wrapWidth, fixedWidth, fixedHeight) {
-    return scene.add.text(0, 0, '', {
-            fontSize: '20px',
-            wordWrap: {
-                width: wrapWidth
-            },
-            maxLines: 3
-        })
-        .setFixedSize(fixedWidth, fixedHeight);
-}
-
-var getBBcodeText = function (scene, wrapWidth, fixedWidth, fixedHeight) {
+var getText = function (scene, wrapWidth, fixedWidth, fixedHeight) {
     return scene.rexUI.add.BBCodeText(0, 0, '', {
         fixedWidth: fixedWidth,
         fixedHeight: fixedHeight,
