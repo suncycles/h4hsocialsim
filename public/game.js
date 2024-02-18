@@ -21,7 +21,9 @@ const maxConverLen = 4; // Determines conversation length in conversation()
 
 var fairyText;
 var charText;
-var userText;
+var dialog;
+var userTextHolder;
+var isTextInputted = 0;
 
 
 class Demo extends Phaser.Scene {
@@ -59,27 +61,29 @@ class Demo extends Phaser.Scene {
 
             var print = this.add.text(0, 0, '');
 
-        var dialog = CreateFeedbackDialog(this)
+        dialog = CreateFeedbackDialog(this)
             .setPosition(window.innerWidth / 2, window.innerHeight*5/6)
             .setOrigin(0.5,0)
             .layout()
-            .popUp(500)
+            //.popUp(500)
             .on('send', function (content) {
-                userText = content;
+                userTextHolder = content;
+                isTextInputted = 1;
+                dialog.getElement('content').setText('');
             })
             .on('close', function () {
-                dialog.scaleDownDestroy(500);
+                dialog.setVisible(false);
             })
             .on('restart', function() {
-                dialog.popUp(dialog, 300);
+                dialog.setVisible(true);
             })
         
     }
 
     update() {
-        //conversation();
     }
 }
+conversation();
 var CreateFeedbackDialog = function (scene, config) {
     var dialog = scene.rexUI.add.dialog({
         space: {
@@ -164,48 +168,57 @@ var CreateButton = function (scene) {
         text: scene.add.text(0, 0, '', { fontSize: 20 }),
     })
 }
-
 async function conversation() {
     try {
         while (converLen < maxConverLen) {
-            const response = await generateMessage(startPrompt);        // Calls API in openai.js and saves response in AI array
+            
+            const response = await generateMessage(startPrompt);
             const provSentence = response[0].message.content;
             allAISent[converLen] = provSentence;
 
-            updateTextBox(charText, provSentence); 
+            updateTextBox(charText, provSentence);
             console.log(provSentence);
 
-            const newAssistSent = {         // Adds AI sentence to prompt JSON to remember conversation
+            const newAssistSent = {
                 role: "assistant",
                 content: provSentence
             };
-
-            dialog.emit('restart');
+            
             const closePromise = new Promise(resolve => {
-                dialog.once('close', () => {
-                    resolve();
-                });
+                const interval = setInterval(() => {
+                    if (isTextInputted === 1) {
+                        console.log("text inputted!");
+                        clearInterval(interval);
+                        resolve();
+                    }
+                }, 100); // Check every 100 milliseconds
             });
-            await closePromise;
-            const userSent = userText;
 
+            await closePromise; // Wait for user input
+
+            const userSent = userTextHolder;
             allUserSent[converLen] = userSent;
 
-            const newUserSent = { // Adds user sentence to prompt JSON to remember conversation
+            const newUserSent = {
                 role: "user",
                 content: userSent
             };
 
             startPrompt.push(newAssistSent);
-            startPrompt.push(newUserSent);           // Combines all sentences for openai.js call           // Combines all sentences for openai.js call
+            startPrompt.push(newUserSent);
 
             converLen++;
+            isTextInputted = 0;
+            dialog.emit('restart');
+
         }
     } catch (error) {
         console.error("Error:", error);
     }
-    return [allAISent, allUserSent]; // Can access this with const [array1, array2] = conversation();
+    return [allAISent, allUserSent];
 }
+
+// Call the conversation function to start the loop
 
 function updateTextBox(textBox, newText) {
     textBox.text = newText;

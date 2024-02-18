@@ -1,5 +1,5 @@
 export async function generateMessage(startPrompt) {
-  const apiKey = process.env.OPENAI_API_KEY;
+  const apiKey = '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';
 
   try {
       
