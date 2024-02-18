@@ -15,24 +15,57 @@ class Demo extends Phaser.Scene {
         const content = '';
         var imageWidth = this.textures.get('bgImage').getSourceImage().width;
         this.add.image(window.innerWidth / 2, window.innerHeight / 2, 'bgImage').setScale(window.innerWidth/imageWidth);
-        this.add.image(700, 350, 'char').setScale(0.45);
+        var char_sprite = this.add.sprite(window.innerWidth *3 / 4, window.innerHeight *3 / 4, 'char_1').setScale(0.35);
+        var girl_sprite = this.add.sprite(window.innerWidth / 4, window.innerHeight / 4, 'girl_1').setScale(0.45);
+        // this.add.image(window.innerWidth / 4, window.innerHeight / 4, 'char_1').setScale(0.45);
+        // this.add.image(window.innerWidth / 4, window.innerHeight / 4, 'girl_1').setScale(0.45);
 
-        // top box w/ no fixed width or height
+
+        // fairy textbox w/ no fixed width or height
         fairyText = createTextBox(this, 100, 100, {
             wrapWidth: 500,
             alpha: 0.5,
         })
             .start(content, 50);
             this.add.image(150, 150, 'fairy').setScale(1.1);
+            
         //bottom box
         charText = createTextBox(this, 100, 400, {
             wrapWidth: 500,
             fixedWidth: 500,
             fixedHeight: 65,
-            title: 'Dudes',
+            title: 'Dude',
             alpha: 0.75,
         })
             .start(content, 50);
+        
+    // /////////////////////////
+
+    // Define an animation
+    this.anims.create({
+        key: 'animateSprite1',
+        frames: [
+            { key: 'girl_1' },
+            { key: 'girl_2' }
+        ],
+        frameRate: 5,
+        repeat: -1
+    });
+
+    this.anims.create({
+        key: 'animateSprite2',
+        frames: [
+            { key: 'char_1' },
+            { key: 'char_2' }
+        ],
+        frameRate: 5,
+        repeat: -1
+    });
+
+    // Play the animation on the sprite
+    girl_sprite.play('animateSprite1');
+    char_sprite.play('animateSprite2');
+    // boy_sprite
     }
 
     update() {
