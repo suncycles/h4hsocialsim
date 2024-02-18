@@ -42,6 +42,7 @@ class Demo extends Phaser.Scene {
         var char_sprite = this.add.sprite(window.innerWidth *3 / 4, window.innerHeight / 2, 'char_1').setScale(0.35);
         var girl_sprite = this.add.sprite(window.innerWidth / 4, window.innerHeight / 2, 'girl_1').setScale(0.55);
         var fairy_sprite = this.add.image(window.innerWidth - vw(8), window.innerHeight * 2/ 3, 'fairy').setScale(1.1);
+        this.key = this.input.keyboard.addKey('13');
 
         // fairy dialogue box
         fairyText = createTextBox(this, window.innerWidth - vw(15), window.innerHeight /2, {
@@ -156,20 +157,11 @@ var CreateFeedbackDialog = function (scene, config) {
 var CreateCanvasInput = function (scene) {
     return scene.rexUI.add.canvasInput({
         width: window.innerWidth / 2.3, height: 20,
-        background: {
-            color: '#0362fc',
-
-            stroke: null,
-            'focus.stroke': '#7b5e57',
-        },
 
         style: {
             fontSize: 20,
             backgroundBottomY: 1,
             backgroundHeight: 20,
-
-            'cursor.color': 'black',
-            'cursor.backgroundColor': 'white',
         },
 
         selectAll: true,
