@@ -43,15 +43,16 @@ class Demo extends Phaser.Scene {
         var girl_sprite = this.add.sprite(window.innerWidth / 4, window.innerHeight / 2, 'girl_1').setScale(0.55);
         var fairy_sprite = this.add.image(window.innerWidth - vw(8), window.innerHeight * 2/ 3, 'fairy').setScale(1.1);
 
-        // top box w/ no fixed width or height
+        // fairy dialogue box
         fairyText = createTextBox(this, window.innerWidth - vw(15), window.innerHeight /2, {
             wrapWidth: 500,
             alpha: 0.5,
         })
             .start(content, 50);
-        //bottom box
-        charText = createTextBox(this, window.innerWidth / 2, window.innerHeight*3/6, {
-            wrapWidth: 500,
+
+        //main dialogue box
+        charText = createTextBox(this, window.innerWidth / 2, window.innerHeight*4/6, {
+            wrapWidth: window.innerWidth/2.5,
             fixedWidth: window.innerWidth/2.5,
             fixedHeight: 65,
             title: 'Dude',
@@ -102,6 +103,7 @@ class Demo extends Phaser.Scene {
             .on('restart', function() {
                 dialog.setVisible(true);
             })
+            .setAlpha(0.75)
         
     }
 
