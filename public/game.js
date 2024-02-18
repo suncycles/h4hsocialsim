@@ -9,7 +9,7 @@ const COLOR_DARK = 0x0362fc;         //box accent
 const allAISent = [];                // Stores all AI sentences
 const allUserSent = [];              // Stores all User sentences
 
-const startPrompt = [                // Starting prompt
+const startPrompt = [                // Starting prompt for conversation()
     {
         role: "user",
         content: "Provide a conversation starter for someone speaking to a child"
@@ -17,7 +17,7 @@ const startPrompt = [                // Starting prompt
 ];
 
 let converLen = 0;
-const maxConverLen = 4;
+const maxConverLen = 4; // Determines conversation length in conversation()
 
 var fairyText;
 var charText;
@@ -168,14 +168,14 @@ var CreateButton = function (scene) {
 async function conversation() {
     try {
         while (converLen < maxConverLen) {
-            const response = await generateMessage(startPrompt);
+            const response = await generateMessage(startPrompt);        // Calls API in openai.js and saves response in AI array
             const provSentence = response[0].message.content;
             allAISent[converLen] = provSentence;
 
             updateTextBox(charText, provSentence); 
             console.log(provSentence);
 
-            const newAssistSent = { // Adds AI sentence to prompt JSON to remember conversation
+            const newAssistSent = {         // Adds AI sentence to prompt JSON to remember conversation
                 role: "assistant",
                 content: provSentence
             };
@@ -197,14 +197,14 @@ async function conversation() {
             };
 
             startPrompt.push(newAssistSent);
-            startPrompt.push(newUserSent);                      // Combines all sentences for openai.js call
+            startPrompt.push(newUserSent);           // Combines all sentences for openai.js call           // Combines all sentences for openai.js call
 
             converLen++;
         }
     } catch (error) {
         console.error("Error:", error);
     }
-    return [allAISent, allUserSent]; // Access with const [array1, array2] = conversation();
+    return [allAISent, allUserSent]; // Can access this with const [array1, array2] = conversation();
 }
 
 function updateTextBox(textBox, newText) {
