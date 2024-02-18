@@ -158,11 +158,20 @@ var CreateFeedbackDialog = function (scene, config) {
 var CreateCanvasInput = function (scene) {
     return scene.rexUI.add.canvasInput({
         width: window.innerWidth / 2.3, height: 20,
+        background: {
+            color: '#0362fc',
+
+            stroke: null,
+            'focus.stroke': '#7b5e57',
+        },
 
         style: {
             fontSize: 20,
             backgroundBottomY: 1,
             backgroundHeight: 20,
+
+            'cursor.color': 'black',
+            'cursor.backgroundColor': 'white',
         },
 
         selectAll: true,
