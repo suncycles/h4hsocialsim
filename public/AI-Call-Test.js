@@ -9,6 +9,6 @@ const prompt = [
 
 generateMessage(prompt)
   .then((response) => {
-    console.log(response);
+    console.log(response[0].message.content);
     // You can use the response as needed
   });
