@@ -15,19 +15,19 @@ const allUserSent = [];                                  // Stores all User sent
 async function conversation() {
     try {
         while (converLen < maxConverLen) {
-            const response = await generateMessage(startPrompt);
+            const response = await generateMessage(startPrompt);            // Calls API in openai.js and saves response in AI array
             const provSentence = response[0].message.content;
             allAISent[converLen] = provSentence;
 
-            const newAssistSent = { // Adds AI sentence to prompt JSON to remember conversation
+            const newAssistSent = {             // Adds AI sentence to prompt JSON to remember conversation
                 role: "assistant",
                 content: provSentence
             };
 
-            const userSent = "I love trains. What about you?"; // *Actual user response goes here* DELETE!!!!
+            const userSent = "I love trains. What about you?";          // *Actual user response goes here* DELETE!!!!
             allUserSent[converLen] = userSent;
 
-            const newUserSent = { // Adds user sentence to prompt JSON to remember conversation
+            const newUserSent = {           // Adds user sentence to prompt JSON to remember conversation
                 role: "user",
                 content: userSent
             };
