@@ -17,7 +17,7 @@ const startPrompt = [                // Starting prompt for conversation()
 ];
 
 let converLen = 0;
-const maxConverLen = 8; // Determines conversation length in conversation()
+const maxConverLen = 3; // Determines conversation length in conversation()
 
 var fairyText;
 var charText;
@@ -199,7 +199,7 @@ async function conversation() {
     try {
         while (converLen < maxConverLen) {
             
-            const response = await generateMessage(startPrompt);
+            const response = await generateMessage(startPrompt);            // Gets AI response from API in openai.js
             const provSentence = response[0].message.content;
             allAISent[converLen] = provSentence;
 
@@ -231,7 +231,7 @@ async function conversation() {
                 content: userSent
             };
 
-            startPrompt.push(newAssistSent);
+            startPrompt.push(newAssistSent);        // Adds conversation to JSON to be retained
             startPrompt.push(newUserSent);
             
             converLen++;
@@ -245,25 +245,23 @@ async function conversation() {
     const gradePrompt =                // Starting prompt for getting grades for responses()
     {
         role: "user",
-        content: "From a scale of one (lowest) to ten (highest), grade the " + maxConverLen + " user (not assistant-based) responses throughout the whole conversation based on social appropriateness with a brief statement for each grade to inform the user. Use format: #.[question number] (user response) - [rating]/10 - reasoning"
+        content: "From a scale of one (lowest) to ten (highest), grade the " + maxConverLen + " user (not assistant-based) responses throughout the whole conversation based on social appropriateness with a brief statement for each grade to inform the user. Use format: #.[question number] (user response) - [rating]/10 - reasoning. Do not include the question number twice in your response"
     };
     startPrompt.push(gradePrompt);
     const response = await generateMessage(startPrompt);
     const provGrade = response[0].message.content;
     console.log(provGrade);
 
-    const numberPattern = /\d+/g; // Match one or more digits
+    const numberPattern = /\d+/g;           // Searches AI grades for the numerical values it gave by searching for numbers in provGrade
     const numbers = provGrade.match(numberPattern);
     console.log(numbers);
     let i = 1;
     let averageGrade = 0;
     let max = numbers.length / 3;
-    for (i; i <= max; i++) {
+    for (i; i <= max; i++) {            // Loops through numbers from provGrade to get only the grades
         averageGrade += parseInt(numbers[i * 3 - 2]);
-        console.log(averageGrade);
     }
     averageGrade = averageGrade / max;
-    console.log(averageGrade);
     return [allAISent, allUserSent, averageGrade];
 }
 // Call the conversation function to start the loop
