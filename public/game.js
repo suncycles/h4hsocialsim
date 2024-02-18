@@ -22,7 +22,12 @@ class Demo extends Phaser.Scene {
     create() {
         
         const content = 'test string';
-        this.add.image(400, 300, 'bgImage');
+        var imageWidth = this.textures.get('bgImage').getSourceImage().width;
+        var imageHeight = this.textures.get('bgImage').getSourceImage().height;
+        console.log(imageWidth);
+        console.log(window.innerWidth);
+        console.log(window.innerWidth/imageWidth);
+        this.add.image(window.innerWidth / 2, window.innerHeight / 2, 'bgImage').setScale(window.innerWidth/imageWidth);
         this.add.image(500, 300, 'npc').setScale(0.2);
         //this.add.image(400, 300, 'dude');
         // top box w/ no fixed width or height
