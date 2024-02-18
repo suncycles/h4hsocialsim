@@ -1,32 +1,28 @@
-import {generateMessage} from './openai.js';
+import {generateMessage} from '/openai.js';
+import {preload} from '/preload.js';
 
 const COLOR_PRIMARY = 0x333CFF;      //box bg
 const COLOR_LIGHT = 0x03a1fc;        //box border
 const COLOR_DARK = 0x0362fc;         //box accent
 class Demo extends Phaser.Scene {
-    preload() { 
-        this.load.scenePlugin({
-            key: 'rexuiplugin',
-            url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
-            sceneKey: 'rexUI'
-        });
-        this.load.image('dude', 'assets/dude.png');
-
-        //arrow that continues text if too long
-        this.load.image('nextPage', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/assets/images/arrow-down-left.png');
-        this.load.image('bgImage', 'assets/bg.webp');
-        //this.load.image('npc', './images/face.png');
-    }
+    preload = preload;
 
     create() {
         const content = 'test string';
-        this.add.image(400, 300, 'bgImage');
-        this.add.image(500, 3200, 'npc');
+        var imageWidth = this.textures.get('bgImage').getSourceImage().width;
+        var imageHeight = this.textures.get('bgImage').getSourceImage().height;
+        console.log(imageWidth);
+        console.log(window.innerWidth);
+        console.log(window.innerWidth/imageWidth);
+        this.add.image(window.innerWidth / 2, window.innerHeight / 2, 'bgImage').setScale(window.innerWidth/imageWidth);
+        //this.add.image(700, 350, 'npc').setScale(0.45);
+        this.add.image(700, 340, 'npc_1').setScale(0.45);
         //this.add.image(400, 300, 'dude');
         // top box w/ no fixed width or height
         createTextBox(this, 100, 100, {
             wrapWidth: 500,
             alpha: 0.5,
+            // icon: 'npc_face',
         })
             .start(content, 50);
 
@@ -51,6 +47,7 @@ var createTextBox = function (scene, x, y, config) {
     var fixedHeight = GetValue(config, 'fixedHeight', 0);
     var titleText = GetValue(config, 'title', undefined);
     var alphaValue = GetValue(config, 'alpha', 0);
+    var iconImg = GetValue(config, 'icon', undefined);
 
 
     var textBox = scene.rexUI.add.textBox({
@@ -59,7 +56,8 @@ var createTextBox = function (scene, x, y, config) {
 
         background: scene.rexUI.add.roundRectangle({ radius: 20, color: COLOR_PRIMARY, strokeColor: COLOR_LIGHT, strokeWidth: 2 }).setAlpha(alphaValue),
 
-        icon: scene.rexUI.add.roundRectangle({ radius: 20, color: COLOR_DARK }),
+        // icon: scene.rexUI.add.roundRectangle({ radius: 20, color: COLOR_DARK }),
+        icon: scene.add.image(150,150,"npc_face").setScale(0.5),
 
         text: getBBcodeText(scene, wrapWidth, fixedWidth, fixedHeight),
 
@@ -148,14 +146,15 @@ var getBBcodeText = function (scene, wrapWidth, fixedWidth, fixedHeight) {
 
 var config = {
     type: Phaser.AUTO,
-    parent: 'phaser-example',
-    width: window.innerWidth,
-    height: window.innerHeight,
     scale: {
-        mode: Phaser.Scale.FIT,
-        autoCenter: Phaser.Scale.CENTER_BOTH,
+        mode: Phaser.Scale.RESIZE,
+        width: window.innerWidth,
+        height: window.innerHeight
     }, 
+    backgroundColor: "red",
+
     scene: Demo
 };
 
 var game = new Phaser.Game(config);
+// console.log(generateMessage);

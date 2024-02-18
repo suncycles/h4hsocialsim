@@ -24,5 +24,6 @@ async function generateMessage(startPrompt) {
     return 'An error occurred while generating the response.';
   }
 }
-
-module.exports = generateMessage
+export async function generateTestMessage(prompt) {
+  return 'this is test dialogue';
+}
