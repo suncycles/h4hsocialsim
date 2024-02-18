@@ -1,6 +1,5 @@
 import {generateMessage} from '/openai.js';
 import {preload} from '/preload.js';
-import {grader} from '/AI-GraderCall.js';
 import {vw} from '/helper.js';
 
 const COLOR_PRIMARY = 0x333CFF;      //box bg
@@ -13,12 +12,12 @@ const allUserSent = [];              // Stores all User sentences
 const startPrompt = [                // Starting prompt for conversation()
     {
         role: "user",
-        content: "Provide a conversation starter for someone speaking to a child"
+        content: "Provide a conversation starter for someone speaking to a child. Start the prompt with My name is Gnomey! If the conversation ever takes an inappropriate turn, attempt to guide the child into a better conversation."
     }
 ];
 
 let converLen = 0;
-const maxConverLen = 4; // Determines conversation length in conversation()
+const maxConverLen = 3; // Determines conversation length in conversation()
 
 var fairyText;
 var charText;
@@ -43,7 +42,7 @@ class Demo extends Phaser.Scene {
         this.add.image(window.innerWidth / 2, window.innerHeight / 2, 'bgImage').setScale(window.innerWidth/imageWidth);
         char_sprite = this.add.sprite(window.innerWidth *3 / 4, window.innerHeight / 2, 'char_1').setScale(0.35);
         girl_sprite = this.add.sprite(window.innerWidth / 4, window.innerHeight / 2, 'girl_1').setScale(0.55);
-        fairy_sprite = this.add.image(window.innerWidth - vw(8), window.innerHeight * 2/ 3, 'fairy').setScale(1.1);
+        fairy_sprite = this.add.sprite(window.innerWidth - vw(8), window.innerHeight * 2/ 3, 'fairy1').setScale(1);
 
         // fairy dialogue box
         fairyText = createTextBox(this, window.innerWidth - vw(15), window.innerHeight /2, {
@@ -57,7 +56,7 @@ class Demo extends Phaser.Scene {
             wrapWidth: window.innerWidth/2.5,
             fixedWidth: window.innerWidth/2.5,
             fixedHeight: 65,
-            title: 'Dude',
+            title: 'Gnomey',
             alpha: 0.75,
         })
             .start(content, 50);
@@ -85,15 +84,21 @@ class Demo extends Phaser.Scene {
             repeat: 5  //number of times animation repeats, -1 is forever
         });
 
-        // Play the animation on the sprite
-        //girl_sprite.play('animateGirl');
-        
+        this.anims.create({
+            key: 'animateFairy',
+            frames:[
+                {key: 'fairy2'},
+                {key: 'fairy1'},
+            ],
+            frameRate: 10,
+            repeat: -1
+        })
+        fairy_sprite.play('animateFairy');
 
         dialog = CreateFeedbackDialog(this)
-            .setPosition(window.innerWidth / 2, window.innerHeight*5/6)
+            .setPosition(window.innerWidth / 2, window.innerHeight*6/7)
             .setOrigin(0.5,0)
             .layout()
-            //.popUp(500)
             .on('send', function (content) {
                 console.log("send");
                 userTextHolder = content;
@@ -114,10 +119,12 @@ class Demo extends Phaser.Scene {
     }
 }
 conversation();
+
+// Creates User Input Box
 var CreateFeedbackDialog = function (scene, config) {
     var dialog = scene.rexUI.add.dialog({
         space: {
-            left: 20, right: 20, top: 20, bottom: -20,
+            left: 20, right: 20, top: 8, bottom: -20,
             title: 10,
             content: 10,
             action: 30
@@ -187,8 +194,6 @@ var CreateTitle = function (scene) {
 }
 var CreateButton = function (scene) {
     return scene.rexUI.add.label({
-        x:100,
-        y:400,
         space: { left: 10, right: 10, top: 10, bottom: 10, },
 
         background: scene.rexUI.add.roundRectangle({
@@ -198,11 +203,12 @@ var CreateButton = function (scene) {
         text: scene.add.text(0, 0, '', { fontSize: 20 }),
     })
 }
+// Handles entire game cycle
 async function conversation() {
     try {
         while (converLen < maxConverLen) {
             
-            const response = await generateMessage(startPrompt);
+            const response = await generateMessage(startPrompt);            // Gets AI response from API in openai.js
             const provSentence = response[0].message.content;
             allAISent[converLen] = provSentence;
 
@@ -234,7 +240,7 @@ async function conversation() {
                 content: userSent
             };
 
-            startPrompt.push(newAssistSent);
+            startPrompt.push(newAssistSent);        // Adds conversation to JSON to be retained
             startPrompt.push(newUserSent);
             
             converLen++;
@@ -245,10 +251,29 @@ async function conversation() {
     } catch (error) {
         console.error("Error:", error);
     }
-    return [allAISent, allUserSent];
-}
-// Call the conversation function to start the loop
+    const gradePrompt =                // Starting prompt for getting grades for responses()
+    {
+        role: "user",
+        content: "From a scale of one (lowest) to ten (highest), grade the " + maxConverLen + " user (not assistant-based) responses throughout the whole conversation based on social appropriateness with a brief statement for each grade to inform the user. Use format: #.[question number] (user response) - [rating]/10 - reasoning. Do not include the question number twice in your response"
+    };
+    startPrompt.push(gradePrompt);
+    const response = await generateMessage(startPrompt);
+    const provGrade = response[0].message.content;
+    console.log(provGrade);
 
+    const numberPattern = /\d+/g;           // Searches AI grades for the numerical values it gave by searching for numbers in provGrade
+    const numbers = provGrade.match(numberPattern);
+    console.log(numbers);
+    let i = 1;
+    let averageGrade = 0;
+    let max = numbers.length / 3;
+    for (i; i <= max; i++) {            // Loops through numbers from provGrade to get only the grades
+        averageGrade += parseInt(numbers[i * 3 - 2]);
+    }
+    averageGrade = averageGrade / max;
+    return [allAISent, allUserSent, averageGrade];
+}
+// Updates main textbox with animation
 function updateTextBox(textBox, newText) {
     let currentIndex = 0;
     let interval = setInterval(() => {
@@ -263,6 +288,7 @@ function updateTextBox(textBox, newText) {
 
 const GetValue = Phaser.Utils.Objects.GetValue;
 
+// RexUI Textbox Helper function
 var createTextBox = function (scene, x, y, config) {
     var wrapWidth = GetValue(config, 'wrapWidth', 0);
     var fixedWidth = GetValue(config, 'fixedWidth', 0);

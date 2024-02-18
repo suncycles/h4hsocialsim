@@ -12,7 +12,7 @@ export async function generateMessage(startPrompt) {
       body: JSON.stringify({
         model: 'gpt-3.5-turbo',
         messages: startPrompt,
-        max_tokens: 50
+        max_tokens: 400
       })
     });
 
@@ -24,7 +24,4 @@ export async function generateMessage(startPrompt) {
     console.error('Error:', error);
     return 'An error occurred while generating the response.';
   }
-}
-export async function generateTestMessage(prompt) {
-  return 'this is test dialogue';
 }
