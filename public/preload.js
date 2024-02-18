@@ -14,4 +14,8 @@ export function preload() {
     this.load.image('npc_1', 'assets/dude1.png');
     this.load.image('fairy', 'assets/fairy.png');
     this.load.image('char', 'assets/pixel_dude.png');
-}
+    this.load.scenePlugin({
+        key: 'rexuiplugin',
+        url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
+        sceneKey: 'rexUI'
+    });}
