@@ -42,7 +42,7 @@ class Demo extends Phaser.Scene {
         this.add.image(window.innerWidth / 2, window.innerHeight / 2, 'bgImage').setScale(window.innerWidth/imageWidth);
         char_sprite = this.add.sprite(window.innerWidth *3 / 4, window.innerHeight / 2, 'char_1').setScale(0.35);
         girl_sprite = this.add.sprite(window.innerWidth / 4, window.innerHeight / 2, 'girl_1').setScale(0.55);
-        fairy_sprite = this.add.image(window.innerWidth - vw(8), window.innerHeight * 2/ 3, 'fairy').setScale(1.1);
+        fairy_sprite = this.add.sprite(window.innerWidth - vw(8), window.innerHeight * 2/ 3, 'fairy1').setScale(1);
 
         // fairy dialogue box
         fairyText = createTextBox(this, window.innerWidth - vw(15), window.innerHeight /2, {
@@ -84,15 +84,21 @@ class Demo extends Phaser.Scene {
             repeat: 5  //number of times animation repeats, -1 is forever
         });
 
-        // Play the animation on the sprite
-        //girl_sprite.play('animateGirl');
-        
+        this.anims.create({
+            key: 'animateFairy',
+            frames:[
+                {key: 'fairy2'},
+                {key: 'fairy1'},
+            ],
+            frameRate: 10,
+            repeat: -1
+        })
+        fairy_sprite.play('animateFairy');
 
         dialog = CreateFeedbackDialog(this)
             .setPosition(window.innerWidth / 2, window.innerHeight*6/7)
             .setOrigin(0.5,0)
             .layout()
-            //.popUp(500)
             .on('send', function (content) {
                 console.log("send");
                 userTextHolder = content;
@@ -113,6 +119,8 @@ class Demo extends Phaser.Scene {
     }
 }
 conversation();
+
+// Creates User Input Box
 var CreateFeedbackDialog = function (scene, config) {
     var dialog = scene.rexUI.add.dialog({
         space: {
@@ -195,6 +203,7 @@ var CreateButton = function (scene) {
         text: scene.add.text(0, 0, '', { fontSize: 20 }),
     })
 }
+// Handles entire game cycle
 async function conversation() {
     try {
         while (converLen < maxConverLen) {
@@ -264,8 +273,7 @@ async function conversation() {
     averageGrade = averageGrade / max;
     return [allAISent, allUserSent, averageGrade];
 }
-// Call the conversation function to start the loop
-
+// Updates main textbox with animation
 function updateTextBox(textBox, newText) {
     let currentIndex = 0;
     let interval = setInterval(() => {
@@ -280,6 +288,7 @@ function updateTextBox(textBox, newText) {
 
 const GetValue = Phaser.Utils.Objects.GetValue;
 
+// RexUI Textbox Helper function
 var createTextBox = function (scene, x, y, config) {
     var wrapWidth = GetValue(config, 'wrapWidth', 0);
     var fixedWidth = GetValue(config, 'fixedWidth', 0);
