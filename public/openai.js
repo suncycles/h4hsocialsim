@@ -12,7 +12,7 @@ export async function generateMessage(startPrompt) {
       body: JSON.stringify({
         model: 'gpt-3.5-turbo',
         messages: startPrompt,
-        max_tokens: 50
+        max_tokens: 400
       })
     });
 
