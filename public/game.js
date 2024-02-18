@@ -1,4 +1,4 @@
-// import {generateMessage} from './openai.js';
+import {generateMessage} from '/openai.js';
 
 const COLOR_PRIMARY = 0x333CFF;      //box bg
 const COLOR_LIGHT = 0x03a1fc;        //box border
@@ -17,13 +17,20 @@ class Demo extends Phaser.Scene {
         this.load.image('bgImage', 'assets/bg.webp');
         this.load.image('npc', 'assets/dude.png');
         this.load.image('npc_face', 'assets/dude_face.png');
+        this.load.image('npc_1', 'assets/dude1.png');
+        this.load.image('fairy', 'assets/fairy.png');
     }
 
     create() {
         const content = 'test string';
-        let imageWidth = this.textures.get('bgImage').getSourceImage().width;
+        var imageWidth = this.textures.get('bgImage').getSourceImage().width;
+        var imageHeight = this.textures.get('bgImage').getSourceImage().height;
+        console.log(imageWidth);
+        console.log(window.innerWidth);
+        console.log(window.innerWidth/imageWidth);
         this.add.image(window.innerWidth / 2, window.innerHeight / 2, 'bgImage').setScale(window.innerWidth/imageWidth);
-        this.add.image(500, 300, 'npc').setScale(0.2);
+        //this.add.image(700, 350, 'npc').setScale(0.45);
+        this.add.image(700, 340, 'npc_1').setScale(0.45);
         //this.add.image(400, 300, 'dude');
         // top box w/ no fixed width or height
         createTextBox(this, 100, 100, {
@@ -40,7 +47,6 @@ class Demo extends Phaser.Scene {
             fixedHeight: 65,
             title: 'Title',
             alpha: 0.75,
-            icon: 'npc_face'
         })
             .start(content, 50);
     }
@@ -65,7 +71,7 @@ var createTextBox = function (scene, x, y, config) {
         background: scene.rexUI.add.roundRectangle({ radius: 20, color: COLOR_PRIMARY, strokeColor: COLOR_LIGHT, strokeWidth: 2 }).setAlpha(alphaValue),
 
         // icon: scene.rexUI.add.roundRectangle({ radius: 20, color: COLOR_DARK }),
-        icon: (iconImg) ? scene.add.image(150,150,iconImg).setScale(0.5) : scene.rexUI.add.roundRectangle({ radius: 20, color: COLOR_DARK }),
+        icon: scene.add.image(150,150,"npc_face").setScale(0.5),
 
         text: getBBcodeText(scene, wrapWidth, fixedWidth, fixedHeight),
 
@@ -155,7 +161,7 @@ var getBBcodeText = function (scene, wrapWidth, fixedWidth, fixedHeight) {
 var config = {
     type: Phaser.AUTO,
     scale: {
-        mode: Phaser.Scale.AUTO,
+        mode: Phaser.Scale.RESIZE,
         width: window.innerWidth,
         height: window.innerHeight
     }, 
