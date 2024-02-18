@@ -14,13 +14,8 @@ class Demo extends Phaser.Scene {
     create() {
         const content = '';
         var imageWidth = this.textures.get('bgImage').getSourceImage().width;
-        var imageHeight = this.textures.get('bgImage').getSourceImage().height;
-        console.log(imageWidth);
-        console.log(window.innerWidth);
-        console.log(window.innerWidth/imageWidth);
         this.add.image(window.innerWidth / 2, window.innerHeight / 2, 'bgImage').setScale(window.innerWidth/imageWidth);
         this.add.image(700, 350, 'char').setScale(0.45);
-        //this.add.image(700, 340, 'npc_1').setScale(0.45);
 
         // top box w/ no fixed width or height
         fairyText = createTextBox(this, 100, 100, {
@@ -34,12 +29,10 @@ class Demo extends Phaser.Scene {
             wrapWidth: 500,
             fixedWidth: 500,
             fixedHeight: 65,
-            title: 'Dude',
+            title: 'Dudes',
             alpha: 0.75,
         })
             .start(content, 50);
-        
-        
     }
 
     update() {
@@ -60,7 +53,6 @@ var createTextBox = function (scene, x, y, config) {
     var fixedHeight = GetValue(config, 'fixedHeight', 0);
     var titleText = GetValue(config, 'title', undefined);
     var alphaValue = GetValue(config, 'alpha', 0);
-    var iconImg = GetValue(config, 'icon', undefined);
 
 
     var textBox = scene.rexUI.add.textBox({
@@ -113,7 +105,7 @@ var createTextBox = function (scene, x, y, config) {
             var icon = this.getElement('action').setVisible(true);
             this.resetChildVisibleState(icon);
             icon.y -= 30;
-            var tween = scene.tweens.add({
+            scene.tweens.add({
                 targets: icon,
                 y: '+=30', // '+=100'
                 ease: 'Bounce', // 'Cubic', 'Elastic', 'Bounce', 'Back'
@@ -161,7 +153,6 @@ var config = {
         width: window.innerWidth,
         height: window.innerHeight
     }, 
-    backgroundColor: "red",
 
     scene: Demo
 };
