@@ -1,0 +1,20 @@
+body, html {
+  height: 100%;
+  margin: 0;
+}
+
+.bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%; /* Adjust width and height as needed */
+    height: 100%; /* Adjust width and height as needed */
+    z-index: -1000;
+  /* The image used */
+    background-image: url('assets/titleSlide.png');
+
+  /* Center and scale the image nicely */
+  background-position: center;
+  background-repeat: no-repeat;
+  
+}

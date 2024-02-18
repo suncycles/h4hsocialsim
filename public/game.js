@@ -1,6 +1,7 @@
 import {generateMessage} from '/openai.js';
 import {preload} from '/preload.js';
 import {grader} from '/AI-GraderCall.js';
+import {vw} from '/helper.js';
 
 const COLOR_PRIMARY = 0x333CFF;      //box bg
 const COLOR_LIGHT = 0x03a1fc;        //box border
@@ -37,19 +38,19 @@ class Demo extends Phaser.Scene {
         const content = '';
         var imageWidth = this.textures.get('bgImage').getSourceImage().width;
         this.add.image(window.innerWidth / 2, window.innerHeight / 2, 'bgImage').setScale(window.innerWidth/imageWidth);
-        this.add.image(window.innerWidth / 2, window.innerHeight / 2, 'char').setScale(0.45);
-        //this.add.image(700, 340, 'npc_1').setScale(0.45);
+        var char_sprite = this.add.sprite(window.innerWidth *3 / 4, window.innerHeight / 2, 'char_1').setScale(0.35);
+        var char_sprite = this.add.sprite(window.innerWidth *3 / 4, window.innerHeight / 2, 'char_1').setScale(0.35);
+        var girl_sprite = this.add.sprite(window.innerWidth / 4, window.innerHeight / 2, 'girl_1').setScale(0.55);
+        var fairy_sprite = this.add.image(window.innerWidth - vw(8), window.innerHeight * 2/ 3, 'fairy').setScale(1.1);
 
         // top box w/ no fixed width or height
-        fairyText = createTextBox(this, 100, 100, {
+        fairyText = createTextBox(this, window.innerWidth - vw(15), window.innerHeight /2, {
             wrapWidth: 500,
             alpha: 0.5,
         })
             .start(content, 50);
-            this.add.image(150, 150, 'fairy').setScale(1.1);
-            
         //bottom box
-        charText = createTextBox(this, window.innerWidth / 2, window.innerHeight*2/3, {
+        charText = createTextBox(this, window.innerWidth / 2, window.innerHeight*3/6, {
             wrapWidth: 500,
             fixedWidth: window.innerWidth/2.5,
             fixedHeight: 65,
@@ -60,7 +61,30 @@ class Demo extends Phaser.Scene {
             charText.setOrigin(0.5, 0);
             charText.layout();
 
-            var print = this.add.text(0, 0, '');
+            // Defines animations
+        this.anims.create({
+            key: 'animateGirl',
+            frames: [
+                { key: 'girl_2' },
+                { key: 'girl_1' },
+            ],
+            frameRate: 5,
+            repeat: 5  //number of times animation repeats, -1 is forever
+        });
+
+        this.anims.create({
+            key: 'animateChar',
+            frames: [
+                { key: 'char_2' },
+                { key: 'char_1' },
+            ],
+            frameRate: 4,
+            repeat: 5  //number of times animation repeats, -1 is forever
+        });
+
+        // Play the animation on the sprite
+        girl_sprite.play('animateGirl');
+        char_sprite.play('animateChar');
 
         dialog = CreateFeedbackDialog(this)
             .setPosition(window.innerWidth / 2, window.innerHeight*5/6)
@@ -234,6 +258,7 @@ var createTextBox = function (scene, x, y, config) {
     var fixedHeight = GetValue(config, 'fixedHeight', 0);
     var titleText = GetValue(config, 'title', undefined);
     var alphaValue = GetValue(config, 'alpha', 0);
+    var iconImg = GetValue(config, 'icon', undefined);
 
 
     var textBox = scene.rexUI.add.textBox({
@@ -286,7 +311,7 @@ var createTextBox = function (scene, x, y, config) {
             var icon = this.getElement('action').setVisible(true);
             this.resetChildVisibleState(icon);
             icon.y -= 30;
-            scene.tweens.add({
+            var tween = scene.tweens.add({
                 targets: icon,
                 y: '+=30', // '+=100'
                 ease: 'Bounce', // 'Cubic', 'Elastic', 'Bounce', 'Back'
@@ -334,6 +359,7 @@ var config = {
         width: window.innerWidth,
         height: window.innerHeight
     }, 
+    backgroundColor: "red",
 
     scene: Demo
 };
