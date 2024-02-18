@@ -22,7 +22,6 @@ class Demo extends Phaser.Scene {
     }
 
     create() {
-        
         const content = 'test string';
         var imageWidth = this.textures.get('bgImage').getSourceImage().width;
         var imageHeight = this.textures.get('bgImage').getSourceImage().height;
@@ -160,7 +159,7 @@ var getBBcodeText = function (scene, wrapWidth, fixedWidth, fixedHeight) {
 var config = {
     type: Phaser.AUTO,
     scale: {
-        mode: Phaser.Scale.AUTO,
+        mode: Phaser.Scale.RESIZE,
         width: window.innerWidth,
         height: window.innerHeight
     }, 

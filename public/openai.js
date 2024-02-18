@@ -1,4 +1,5 @@
 export async function generateMessage(prompt) {
+  return "test dialogue here";
   const apiKey = process.env.OPENAI_API_KEY;
   try {
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -21,4 +22,7 @@ export async function generateMessage(prompt) {
     console.error('Error:', error);
     return 'An error occurred while generating the response.';
   }
+}
+export async function generateTestMessage(prompt) {
+  return 'this is test dialogue';
 }
