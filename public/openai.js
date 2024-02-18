@@ -22,4 +22,3 @@ export async function generateMessage(prompt) {
     return 'An error occurred while generating the response.';
   }
 }
-module.exports = generateMessage

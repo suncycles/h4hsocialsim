@@ -1,4 +1,4 @@
-// import {generateMessage} from './openai.js';
+import {generateMessage} from '/openai.js';
 
 const COLOR_PRIMARY = 0x333CFF;      //box bg
 const COLOR_LIGHT = 0x03a1fc;        //box border
@@ -17,6 +17,8 @@ class Demo extends Phaser.Scene {
         this.load.image('bgImage', 'assets/bg.webp');
         this.load.image('npc', 'assets/dude.png');
         this.load.image('npc_face', 'assets/dude_face.png');
+        this.load.image('npc_1', 'assets/dude1.png');
+        this.load.image('fairy', 'assets/fairy.png');
     }
 
     create() {
@@ -28,17 +30,19 @@ class Demo extends Phaser.Scene {
         console.log(window.innerWidth);
         console.log(window.innerWidth/imageWidth);
         this.add.image(window.innerWidth / 2, window.innerHeight / 2, 'bgImage').setScale(window.innerWidth/imageWidth);
-        this.add.image(500, 300, 'npc').setScale(0.2);
+        //this.add.image(700, 350, 'npc').setScale(0.45);
+        this.add.image(700, 340, 'npc_1').setScale(0.45);
         //this.add.image(400, 300, 'dude');
         // top box w/ no fixed width or height
         createTextBox(this, 100, 100, {
             wrapWidth: 500,
             alpha: 0.5,
         })
-            .start(content, 50);
+            .start('       '+'fairy helper text goes here', 50);
+            this.add.image(130,120,"fairy").setScale(1),
 
         //bottom box
-        createTextBox(this, 100, 400, {
+        createTextBox(this, 400, 500, {
             wrapWidth: 500,
             fixedWidth: 500,
             fixedHeight: 65,
@@ -67,7 +71,6 @@ var createTextBox = function (scene, x, y, config) {
         background: scene.rexUI.add.roundRectangle({ radius: 20, color: COLOR_PRIMARY, strokeColor: COLOR_LIGHT, strokeWidth: 2 }).setAlpha(alphaValue),
 
         // icon: scene.rexUI.add.roundRectangle({ radius: 20, color: COLOR_DARK }),
-        icon: scene.add.image(150,150,"npc_face").setScale(0.5),
 
         text: getBBcodeText(scene, wrapWidth, fixedWidth, fixedHeight),
 
