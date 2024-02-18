@@ -1,0 +1,45 @@
+body, html {
+  height: 100%;
+  margin: 0;
+}
+
+.bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%; /* Adjust width and height as needed */
+    height: 100%; /* Adjust width and height as needed */
+    z-index: -1000;
+  /* The image used */
+    background-image: url('assets/titleSlide.png');
+
+  /* Center and scale the image nicely */
+  background-position: center;
+  background-repeat: no-repeat;
+  
+}
+
+.button{
+    position: absolute;
+    display: block;
+    width: 115px;
+    height: 25px;
+    background: #4E9CAF;
+    padding: 10px;
+    text-align: center;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+}
+
+#start { 
+    line-height: 25px;
+    left:    89vh;
+    bottom:   15vh;
+}
+
+#about {
+    position: absolute;
+    top: 0vh;
+    right: 0vh;
+}

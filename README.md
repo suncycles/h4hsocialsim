@@ -21,7 +21,6 @@ Integrating AI to simulate realistic social interactions proved challenging, req
 ## Accomplishments That We're Proud Of
 - Successfully integrating OpenAI's powerful AI models to drive realistic social simulations.
 - Creating an intuitive, engaging user interface that makes learning about social interactions fun and accessible.
-- Developing a scalable, modular architecture that can be easily expanded with more scenarios and functionalities.
 
 ## What We Learned
 This project was a journey in understanding AI's potential and limitations in simulating human behavior. We gained invaluable experience in full-stack development, AI integration, and the importance of thoughtful design in educational technology.

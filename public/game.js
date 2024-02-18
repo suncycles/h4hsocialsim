@@ -1,5 +1,7 @@
 import {generateMessage} from '/openai.js';
 import {preload} from '/preload.js';
+import {grader} from '/AI-GraderCall.js';
+import {vw} from '/helper.js';
 
 const COLOR_PRIMARY = 0x333CFF;      //box bg
 const COLOR_LIGHT = 0x03a1fc;        //box border
@@ -11,18 +13,21 @@ const allUserSent = [];              // Stores all User sentences
 const startPrompt = [                // Starting prompt for conversation()
     {
         role: "user",
-        content: "Provide a conversation starter for someone speaking to a child"
+        content: "Provide a conversation starter for someone speaking to a child. Start the prompt with My name is Gnomey! If the conversation ever takes an inappropriate turn, attempt to guide the child into a better conversation."
     }
 ];
 
 let converLen = 0;
-const maxConverLen = 3; // Determines conversation length in conversation()
+const maxConverLen = 8; // Determines conversation length in conversation()
 
 var fairyText;
 var charText;
 var dialog;
 var userTextHolder;
 var isTextInputted = 0;
+var char_sprite;
+var girl_sprite;
+var fairy_sprite;
 
 
 class Demo extends Phaser.Scene {
@@ -36,36 +41,61 @@ class Demo extends Phaser.Scene {
         const content = '';
         var imageWidth = this.textures.get('bgImage').getSourceImage().width;
         this.add.image(window.innerWidth / 2, window.innerHeight / 2, 'bgImage').setScale(window.innerWidth/imageWidth);
-        this.add.image(window.innerWidth / 2, window.innerHeight / 2, 'char').setScale(0.45);
-        //this.add.image(700, 340, 'npc_1').setScale(0.45);
+        char_sprite = this.add.sprite(window.innerWidth *3 / 4, window.innerHeight / 2, 'char_1').setScale(0.35);
+        girl_sprite = this.add.sprite(window.innerWidth / 4, window.innerHeight / 2, 'girl_1').setScale(0.55);
+        fairy_sprite = this.add.image(window.innerWidth - vw(8), window.innerHeight * 2/ 3, 'fairy').setScale(1.1);
 
-        // top box w/ no fixed width or height
-        fairyText = createTextBox(this, 100, 100, {
+        // fairy dialogue box
+        fairyText = createTextBox(this, window.innerWidth - vw(15), window.innerHeight /2, {
             wrapWidth: 500,
             alpha: 0.5,
         })
             .start(content, 50);
-            this.add.image(150, 150, 'fairy').setScale(1.1);
-        //bottom box
-        charText = createTextBox(this, window.innerWidth / 2, window.innerHeight*2/3, {
-            wrapWidth: 500,
+
+        //main dialogue box
+        charText = createTextBox(this, window.innerWidth / 2, window.innerHeight*4/6, {
+            wrapWidth: window.innerWidth/2.5,
             fixedWidth: window.innerWidth/2.5,
             fixedHeight: 65,
-            title: 'Dude',
+            title: 'Gnomey',
             alpha: 0.75,
         })
             .start(content, 50);
             charText.setOrigin(0.5, 0);
             charText.layout();
 
-            var print = this.add.text(0, 0, '');
+            // Defines animations
+        this.anims.create({
+            key: 'animateGirl',
+            frames: [
+                { key: 'girl_2' },
+                { key: 'girl_1' },
+            ],
+            frameRate: 5,
+            repeat: 5  //number of times animation repeats, -1 is forever
+        });
+
+        this.anims.create({
+            key: 'animateChar',
+            frames: [
+                { key: 'char_2' },
+                { key: 'char_1' },
+            ],
+            frameRate: 4,
+            repeat: 5  //number of times animation repeats, -1 is forever
+        });
+
+        // Play the animation on the sprite
+        //girl_sprite.play('animateGirl');
+        
 
         dialog = CreateFeedbackDialog(this)
-            .setPosition(window.innerWidth / 2, window.innerHeight*5/6)
+            .setPosition(window.innerWidth / 2, window.innerHeight*6/7)
             .setOrigin(0.5,0)
             .layout()
             //.popUp(500)
             .on('send', function (content) {
+                console.log("send");
                 userTextHolder = content;
                 isTextInputted = 1;
                 dialog.getElement('content').setText('');
@@ -76,6 +106,7 @@ class Demo extends Phaser.Scene {
             .on('restart', function() {
                 dialog.setVisible(true);
             })
+            .setAlpha(0.75)
         
     }
 
@@ -86,7 +117,7 @@ conversation();
 var CreateFeedbackDialog = function (scene, config) {
     var dialog = scene.rexUI.add.dialog({
         space: {
-            left: 20, right: 20, top: 20, bottom: -20,
+            left: 20, right: 20, top: 8, bottom: -20,
             title: 10,
             content: 10,
             action: 30
@@ -156,8 +187,6 @@ var CreateTitle = function (scene) {
 }
 var CreateButton = function (scene) {
     return scene.rexUI.add.label({
-        x:100,
-        y:400,
         space: { left: 10, right: 10, top: 10, bottom: 10, },
 
         background: scene.rexUI.add.roundRectangle({
@@ -192,7 +221,7 @@ async function conversation() {
                     }
                 }, 100); // Check every 100 milliseconds
             });
-
+            char_sprite.play('animateChar');
             await closePromise; // Wait for user input
 
             const userSent = userTextHolder;
@@ -205,11 +234,11 @@ async function conversation() {
 
             startPrompt.push(newAssistSent);
             startPrompt.push(newUserSent);
-
+            
             converLen++;
             isTextInputted = 0;
             dialog.emit('restart');
-
+            
         }
     } catch (error) {
         console.error("Error:", error);
@@ -238,11 +267,17 @@ async function conversation() {
     console.log(averageGrade);
     return [allAISent, allUserSent, averageGrade];
 }
-
 // Call the conversation function to start the loop
 
 function updateTextBox(textBox, newText) {
-    textBox.text = newText;
+    let currentIndex = 0;
+    let interval = setInterval(() => {
+        textBox.text = newText.substring(0, currentIndex);
+        currentIndex++;
+        if (currentIndex > newText.length) {
+            clearInterval(interval);
+        }
+    }, 50);
     textBox.layout();
 }
 
@@ -294,9 +329,7 @@ var createTextBox = function (scene, x, y, config) {
                 this.stop(true);
             } else if (!this.isLastPage) {
                 this.typeNextPage();
-            } else {
-                // Next actions
-            }
+            } 
         }, textBox)
         .on('pageend', function () {
             if (this.isLastPage) {
@@ -315,6 +348,8 @@ var createTextBox = function (scene, x, y, config) {
                 repeat: 0, // -1: infinity
                 yoyo: false
             });
+            var keyInput = scene.input.keyboard.addKey(13);
+            keyInput.on('down', emit('send'));
         }, textBox)
         .on('complete', function () {
             console.log('all pages typing complete')
