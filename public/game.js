@@ -15,13 +15,8 @@ class Demo extends Phaser.Scene {
     create() {
         const content = '';
         var imageWidth = this.textures.get('bgImage').getSourceImage().width;
-        var imageHeight = this.textures.get('bgImage').getSourceImage().height;
-        console.log(imageWidth);
-        console.log(window.innerWidth);
-        console.log(window.innerWidth/imageWidth);
         this.add.image(window.innerWidth / 2, window.innerHeight / 2, 'bgImage').setScale(window.innerWidth/imageWidth);
         this.add.image(700, 350, 'char').setScale(0.45);
-        //this.add.image(700, 340, 'npc_1').setScale(0.45);
 
         // top box w/ no fixed width or height
         fairyText = createTextBox(this, 100, 100, {
