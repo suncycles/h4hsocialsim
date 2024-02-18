@@ -41,8 +41,8 @@ class Demo extends Phaser.Scene {
         const content = '';
         var imageWidth = this.textures.get('bgImage').getSourceImage().width;
         this.add.image(window.innerWidth / 2, window.innerHeight / 2, 'bgImage').setScale(window.innerWidth/imageWidth);
-        char_sprite = this.add.sprite(window.innerWidth *3 / 4, window.innerHeight / 2, 'char_1').setScale(0.35);
-        girl_sprite = this.add.sprite(window.innerWidth / 4, window.innerHeight / 2, 'girl_1').setScale(0.55);
+        char_sprite = this.add.sprite(window.innerWidth/2, window.innerHeight / 2, 'char_1').setScale(0.4);
+        //girl_sprite = this.add.sprite(window.innerWidth / 4, window.innerHeight / 2, 'girl_1').setScale(0.55);
         fairy_sprite = this.add.sprite(window.innerWidth - vw(8), window.innerHeight * 2/ 3, 'fairy1').setScale(1);
 
         // fairy dialogue box
@@ -55,7 +55,7 @@ class Demo extends Phaser.Scene {
 
         //main dialogue box
         charText = createTextBox(this, window.innerWidth / 2, window.innerHeight*4/6, {
-            wrapWidth: window.innerWidth/2,
+            wrapWidth: window.innerWidth/2.5,
             fixedWidth: window.innerWidth/2.5,
             fixedHeight: 65,
             title: 'Gnomey',

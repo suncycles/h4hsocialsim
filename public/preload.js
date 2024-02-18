@@ -8,7 +8,7 @@ export function preload() {
 
     // arrow that continues text if too long
     this.load.image('nextPage', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/assets/images/arrow-down-left.png');
-    this.load.image('bgImage', 'assets/pixel_bg.png');
+    this.load.image('bgImage', 'assets/bg.webp');
     this.load.image('fairy1', 'assets/fairy1.png');
     this.load.image('fairy2', 'assets/fairy2.png');
     this.load.image('char_1', 'assets/pixel_dude.png');
