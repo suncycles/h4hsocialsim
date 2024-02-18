@@ -41,31 +41,30 @@ class Demo extends Phaser.Scene {
         
     // /////////////////////////
 
-    // Define an animation
+    // Defines animations
     this.anims.create({
-        key: 'animateSprite1',
+        key: 'animateGirl',
         frames: [
+            { key: 'girl_2' },
             { key: 'girl_1' },
-            { key: 'girl_2' }
         ],
         frameRate: 5,
-        repeat: -1
+        repeat: 9  //number of times animation repeats, -1 is forever
     });
 
     this.anims.create({
-        key: 'animateSprite2',
+        key: 'animateChar',
         frames: [
+            { key: 'char_2' },
             { key: 'char_1' },
-            { key: 'char_2' }
         ],
         frameRate: 5,
-        repeat: -1
+        repeat: -1  //number of times animation repeats, -1 is forever
     });
 
     // Play the animation on the sprite
-    girl_sprite.play('animateSprite1');
-    char_sprite.play('animateSprite2');
-    // boy_sprite
+    girl_sprite.play('animateGirl');
+    char_sprite.play('animateChar');
     }
 
     update() {
