@@ -43,20 +43,22 @@ class Demo extends Phaser.Scene {
         this.add.image(window.innerWidth / 2, window.innerHeight / 2, 'bgImage').setScale(window.innerWidth/imageWidth);
         char_sprite = this.add.sprite(window.innerWidth/2, window.innerHeight / 2, 'char_1').setScale(0.4);
         //girl_sprite = this.add.sprite(window.innerWidth / 4, window.innerHeight / 2, 'girl_1').setScale(0.55);
-        fairy_sprite = this.add.sprite(window.innerWidth - vw(8), window.innerHeight * 2/ 3, 'fairy1').setScale(1);
+        fairy_sprite = this.add.sprite(window.innerWidth - vw(5), vw(5), 'fairy1').setScale(1);
+
 
         // fairy dialogue box
-        fairyText = createTextBox(this, window.innerWidth - vw(15), window.innerHeight /2, {
-            fixedWidth: 200,
-            wrapWidth: 200,
+        fairyText = createTextBox(this, window.innerWidth /2, vw(1), {
+            fixedWidth: window.innerWidth /3,
+            fixedHeight: 45,
+            wrapWidth: window.innerWidth /3,
             alpha: 0.5,
         })
             .start(content, 50);
 
         //main dialogue box
         charText = createTextBox(this, window.innerWidth / 2, window.innerHeight*4/6, {
-            wrapWidth: window.innerWidth/2.5,
-            fixedWidth: window.innerWidth/2.5,
+            wrapWidth: window.innerWidth/1.5,
+            fixedWidth: window.innerWidth/1.5,
             fixedHeight: 65,
             title: 'Gnomey',
             alpha: 0.75,
@@ -328,7 +330,7 @@ var createTextBox = function (scene, x, y, config) {
 
         text: getBBcodeText(scene, wrapWidth, fixedWidth, fixedHeight),
 
-        action: scene.add.image(0, 0, 'nextPage').setTint(COLOR_LIGHT).setVisible(true),
+        action: scene.add.image(0, 0, 'nextPage').setTint(COLOR_LIGHT).setVisible(false),
 
         title: (titleText) ? scene.add.text(0, 0, titleText, { fontSize: '24px', }) : undefined,
 
