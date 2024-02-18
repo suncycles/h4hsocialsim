@@ -1,6 +1,5 @@
 import {generateMessage} from '/openai.js';
 import {preload} from '/preload.js';
-import {grader} from '/AI-GraderCall.js';
 import {vw} from '/helper.js';
 
 const COLOR_PRIMARY = 0x333CFF;      //box bg
