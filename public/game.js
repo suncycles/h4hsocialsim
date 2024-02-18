@@ -1,27 +1,46 @@
 import {generateMessage} from '/openai.js';
 import {preload} from '/preload.js';
+import {grader} from '/AI-GraderCall.js';
 
 const COLOR_PRIMARY = 0x333CFF;      //box bg
 const COLOR_LIGHT = 0x03a1fc;        //box border
 const COLOR_DARK = 0x0362fc;         //box accent
 
+const allAISent = [];                // Stores all AI sentences
+const allUserSent = [];              // Stores all User sentences
+
+const startPrompt = [                // Starting prompt for conversation()
+    {
+        role: "user",
+        content: "Provide a conversation starter for someone speaking to a child"
+    }
+];
+
+let converLen = 0;
+const maxConverLen = 4; // Determines conversation length in conversation()
+
 var fairyText;
 var charText;
+var dialog;
+var userTextHolder;
+var isTextInputted = 0;
+
 
 class Demo extends Phaser.Scene {
     preload = preload;
-
+    constructor() {
+        super({
+            key: 'examples'
+        })
+    }
     create() {
         const content = '';
         var imageWidth = this.textures.get('bgImage').getSourceImage().width;
         this.add.image(window.innerWidth / 2, window.innerHeight / 2, 'bgImage').setScale(window.innerWidth/imageWidth);
-        var char_sprite = this.add.sprite(window.innerWidth *3 / 4, window.innerHeight *3 / 4, 'char_1').setScale(0.35);
-        var girl_sprite = this.add.sprite(window.innerWidth / 4, window.innerHeight / 4, 'girl_1').setScale(0.45);
-        // this.add.image(window.innerWidth / 4, window.innerHeight / 4, 'char_1').setScale(0.45);
-        // this.add.image(window.innerWidth / 4, window.innerHeight / 4, 'girl_1').setScale(0.45);
+        this.add.image(window.innerWidth / 2, window.innerHeight / 2, 'char').setScale(0.45);
+        //this.add.image(700, 340, 'npc_1').setScale(0.45);
 
-
-        // fairy textbox w/ no fixed width or height
+        // top box w/ no fixed width or height
         fairyText = createTextBox(this, 100, 100, {
             wrapWidth: 500,
             alpha: 0.5,
@@ -30,47 +49,177 @@ class Demo extends Phaser.Scene {
             this.add.image(150, 150, 'fairy').setScale(1.1);
             
         //bottom box
-        charText = createTextBox(this, 100, 400, {
+        charText = createTextBox(this, window.innerWidth / 2, window.innerHeight*2/3, {
             wrapWidth: 500,
-            fixedWidth: 500,
+            fixedWidth: window.innerWidth/2.5,
             fixedHeight: 65,
             title: 'Dude',
             alpha: 0.75,
         })
             .start(content, 50);
+            charText.setOrigin(0.5, 0);
+            charText.layout();
+
+            var print = this.add.text(0, 0, '');
+
+        dialog = CreateFeedbackDialog(this)
+            .setPosition(window.innerWidth / 2, window.innerHeight*5/6)
+            .setOrigin(0.5,0)
+            .layout()
+            //.popUp(500)
+            .on('send', function (content) {
+                userTextHolder = content;
+                isTextInputted = 1;
+                dialog.getElement('content').setText('');
+            })
+            .on('close', function () {
+                dialog.setVisible(false);
+            })
+            .on('restart', function() {
+                dialog.setVisible(true);
+            })
         
-    // /////////////////////////
-
-    // Defines animations
-    this.anims.create({
-        key: 'animateGirl',
-        frames: [
-            { key: 'girl_2' },
-            { key: 'girl_1' },
-        ],
-        frameRate: 5,
-        repeat: 9  //number of times animation repeats, -1 is forever
-    });
-
-    this.anims.create({
-        key: 'animateChar',
-        frames: [
-            { key: 'char_2' },
-            { key: 'char_1' },
-        ],
-        frameRate: 5,
-        repeat: -1  //number of times animation repeats, -1 is forever
-    });
-
-    // Play the animation on the sprite
-    girl_sprite.play('animateGirl');
-    char_sprite.play('animateChar');
     }
 
     update() {
-        
     }
 }
+conversation();
+var CreateFeedbackDialog = function (scene, config) {
+    var dialog = scene.rexUI.add.dialog({
+        space: {
+            left: 20, right: 20, top: 20, bottom: -20,
+            title: 10,
+            content: 10,
+            action: 30
+
+        },
+
+        background: scene.rexUI.add.roundRectangle({
+            radius: 20, color: COLOR_PRIMARY
+        }),
+
+        title: CreateTitle(scene).setText('Response'),
+
+        content: CreateCanvasInput(scene),
+
+        actions: [
+            CreateButton(scene).setText('Send'),
+        ],
+
+        expand: {
+            title: false,
+        }
+    })
+
+    dialog
+        .on('action.click', function (button, index, pointer, event) {
+            if (index === 0) { // Send button                
+                var content = dialog.getElement('content').text;
+                dialog.emit('send', content);
+            }
+
+            dialog.emit('close');
+        });
+
+
+    dialog.getElement('content').open();
+
+    return dialog;
+}
+var CreateCanvasInput = function (scene) {
+    return scene.rexUI.add.canvasInput({
+        width: window.innerWidth / 2.3, height: 20,
+        background: {
+            color: '#0362fc',
+
+            stroke: null,
+            'focus.stroke': '#7b5e57',
+        },
+
+        style: {
+            fontSize: 20,
+            backgroundBottomY: 1,
+            backgroundHeight: 20,
+
+            'cursor.color': 'black',
+            'cursor.backgroundColor': 'white',
+        },
+
+        selectAll: true,
+        textArea: true,
+        maxLength: 500,
+    })
+}
+var CreateTitle = function (scene) {
+    return scene.rexUI.add.label({
+        text: scene.add.text(0, 0, '', { fontSize: 20 }),
+    })
+}
+var CreateButton = function (scene) {
+    return scene.rexUI.add.label({
+        x:100,
+        y:400,
+        space: { left: 10, right: 10, top: 10, bottom: 10, },
+
+        background: scene.rexUI.add.roundRectangle({
+            radius: 10, color: COLOR_DARK, strokeColor: COLOR_LIGHT
+        }),
+
+        text: scene.add.text(0, 0, '', { fontSize: 20 }),
+    })
+}
+async function conversation() {
+    try {
+        while (converLen < maxConverLen) {
+            
+            const response = await generateMessage(startPrompt);
+            const provSentence = response[0].message.content;
+            allAISent[converLen] = provSentence;
+
+            updateTextBox(charText, provSentence);
+            console.log(provSentence);
+
+            const newAssistSent = {
+                role: "assistant",
+                content: provSentence
+            };
+            
+            const closePromise = new Promise(resolve => {
+                const interval = setInterval(() => {
+                    if (isTextInputted === 1) {
+                        console.log("text inputted!");
+                        clearInterval(interval);
+                        resolve();
+                    }
+                }, 100); // Check every 100 milliseconds
+            });
+
+            await closePromise; // Wait for user input
+
+            const userSent = userTextHolder;
+            allUserSent[converLen] = userSent;
+
+            const newUserSent = {
+                role: "user",
+                content: userSent
+            };
+
+            startPrompt.push(newAssistSent);
+            startPrompt.push(newUserSent);
+
+            converLen++;
+            isTextInputted = 0;
+            dialog.emit('restart');
+
+        }
+    } catch (error) {
+        console.error("Error:", error);
+    }
+    return [allAISent, allUserSent];
+}
+
+// Call the conversation function to start the loop
 
 function updateTextBox(textBox, newText) {
     textBox.text = newText;
