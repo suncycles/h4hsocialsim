@@ -9,8 +9,8 @@ const startPrompt = [ // Starting prompt
 let converLen = 0;
 const maxConverLen = 4; // Determines conversation length
 
-const allAISent = [];
-const allUserSent = [];
+const allAISent = [];                                    // Stores all AI sentences
+const allUserSent = [];                                  // Stores all User sentences    
 
 async function conversation() {
     try {
@@ -24,7 +24,7 @@ async function conversation() {
                 content: provSentence
             };
 
-            const userSent = "I love trains. What about you?"; // *Actual user response goes here*
+            const userSent = "I love trains. What about you?"; // *Actual user response goes here* DELETE!!!!
             allUserSent[converLen] = userSent;
 
             const newUserSent = { // Adds user sentence to prompt JSON to remember conversation
@@ -33,7 +33,7 @@ async function conversation() {
             };
 
             startPrompt.push(newAssistSent);
-            startPrompt.push(newUserSent);
+            startPrompt.push(newUserSent);                      // Combines all sentences for openai.js call
 
             converLen++;
         }
