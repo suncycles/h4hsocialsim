@@ -6,7 +6,7 @@ async function grader(AIArray, userArray) {
     let improvementPrompt = "I will provide a list of: a brief set of provided sentences, followed by a response to that sentence. Grade the sentences from 1 to 10 based on social appropriateness with a brief explaination for each.\n";
     let intGradesPrompt = "I will provide a list of: a brief set of provided sentences, followed by a response to that sentence. Provide only a list of grades of the evenly-ordered set of sentences from 1 to 10 based on social appropriateness"
     let defaultString = "";
-    
+
     let i = 0;
     let arrayLen = userArray.length; 
     for (i; i < arrayLen; i++) {            // Combines all sentences in arrays for one API call
