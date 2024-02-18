@@ -39,7 +39,6 @@ class Demo extends Phaser.Scene {
     }
     create() {
         const content = '';
-        var keyboard = this.input.keyboard;
         var imageWidth = this.textures.get('bgImage').getSourceImage().width;
         this.add.image(window.innerWidth / 2, window.innerHeight / 2, 'bgImage').setScale(window.innerWidth/imageWidth);
         char_sprite = this.add.sprite(window.innerWidth/2, window.innerHeight / 2, 'char_1').setScale(0.4);
