@@ -23,8 +23,25 @@ class Demo extends Phaser.Scene {
 
     create() {
         const content = 'test string';
+        var genContent;
+        async function getMessage () {
+            const value = await generateMessage('TEST');
+            console.log(value);
+            return value;
+        }
+        getMessage().then((value) => {
+            genContent = value;
+            console.log(genContent);
+            createTextBox(this, 100, 400, {
+                wrapWidth: 500,
+                fixedWidth: 500,
+                fixedHeight: 65,
+                title: 'Title',
+                alpha: 0.75,
+            })
+                .start(genContent, 50);
+        });
         var imageWidth = this.textures.get('bgImage').getSourceImage().width;
-        var imageHeight = this.textures.get('bgImage').getSourceImage().height;
         console.log(imageWidth);
         console.log(window.innerWidth);
         console.log(window.innerWidth/imageWidth);
@@ -38,17 +55,7 @@ class Demo extends Phaser.Scene {
             alpha: 0.5,
         })
             .start('       '+'fairy helper text goes here', 50);
-            this.add.image(130,120,"fairy").setScale(1),
-
-        //bottom box
-        createTextBox(this, 400, 500, {
-            wrapWidth: 500,
-            fixedWidth: 500,
-            fixedHeight: 65,
-            title: 'Title',
-            alpha: 0.75,
-        })
-            .start(content, 50);
+            this.add.image(130,120,"fairy").setScale(1)
     }
 
     update() { }

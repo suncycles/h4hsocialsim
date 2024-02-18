@@ -1,5 +1,5 @@
 export async function generateMessage(prompt) {
-  return "test dialogue here";
+  return "test dialogue here yapyapyapyapyapyapyapyapyapyapyapyapyapyapyapyapyapyapyapyapyap";
   const apiKey = process.env.OPENAI_API_KEY;
   try {
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
