@@ -95,6 +95,7 @@ class Demo extends Phaser.Scene {
             .layout()
             //.popUp(500)
             .on('send', function (content) {
+                console.log("send");
                 userTextHolder = content;
                 isTextInputted = 1;
                 dialog.getElement('content').setText('');
@@ -318,6 +319,8 @@ var createTextBox = function (scene, x, y, config) {
                 repeat: 0, // -1: infinity
                 yoyo: false
             });
+            var keyInput = scene.input.keyboard.addKey(13);
+            keyInput.on('down', emit('send'));
         }, textBox)
         .on('complete', function () {
             console.log('all pages typing complete')
