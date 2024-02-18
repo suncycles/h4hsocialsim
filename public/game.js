@@ -25,6 +25,9 @@ var charText;
 var dialog;
 var userTextHolder;
 var isTextInputted = 0;
+var char_sprite;
+var girl_sprite;
+var fairy_sprite;
 
 
 class Demo extends Phaser.Scene {
@@ -38,10 +41,9 @@ class Demo extends Phaser.Scene {
         const content = '';
         var imageWidth = this.textures.get('bgImage').getSourceImage().width;
         this.add.image(window.innerWidth / 2, window.innerHeight / 2, 'bgImage').setScale(window.innerWidth/imageWidth);
-        var char_sprite = this.add.sprite(window.innerWidth *3 / 4, window.innerHeight / 2, 'char_1').setScale(0.35);
-        var char_sprite = this.add.sprite(window.innerWidth *3 / 4, window.innerHeight / 2, 'char_1').setScale(0.35);
-        var girl_sprite = this.add.sprite(window.innerWidth / 4, window.innerHeight / 2, 'girl_1').setScale(0.55);
-        var fairy_sprite = this.add.image(window.innerWidth - vw(8), window.innerHeight * 2/ 3, 'fairy').setScale(1.1);
+        char_sprite = this.add.sprite(window.innerWidth *3 / 4, window.innerHeight / 2, 'char_1').setScale(0.35);
+        girl_sprite = this.add.sprite(window.innerWidth / 4, window.innerHeight / 2, 'girl_1').setScale(0.55);
+        fairy_sprite = this.add.image(window.innerWidth - vw(8), window.innerHeight * 2/ 3, 'fairy').setScale(1.1);
 
         // fairy dialogue box
         fairyText = createTextBox(this, window.innerWidth - vw(15), window.innerHeight /2, {
@@ -84,8 +86,8 @@ class Demo extends Phaser.Scene {
         });
 
         // Play the animation on the sprite
-        girl_sprite.play('animateGirl');
-        char_sprite.play('animateChar');
+        //girl_sprite.play('animateGirl');
+        
 
         dialog = CreateFeedbackDialog(this)
             .setPosition(window.innerWidth / 2, window.innerHeight*5/6)
@@ -220,7 +222,7 @@ async function conversation() {
                     }
                 }, 100); // Check every 100 milliseconds
             });
-
+            char_sprite.play('animateChar');
             await closePromise; // Wait for user input
 
             const userSent = userTextHolder;
@@ -233,22 +235,28 @@ async function conversation() {
 
             startPrompt.push(newAssistSent);
             startPrompt.push(newUserSent);
-
+            
             converLen++;
             isTextInputted = 0;
             dialog.emit('restart');
-
+            
         }
     } catch (error) {
         console.error("Error:", error);
     }
     return [allAISent, allUserSent];
 }
-
 // Call the conversation function to start the loop
 
 function updateTextBox(textBox, newText) {
-    textBox.text = newText;
+    let currentIndex = 0;
+    let interval = setInterval(() => {
+        textBox.text = newText.substring(0, currentIndex);
+        currentIndex++;
+        if (currentIndex > newText.length) {
+            clearInterval(interval);
+        }
+    }, 50);
     textBox.layout();
 }
 
@@ -300,9 +308,7 @@ var createTextBox = function (scene, x, y, config) {
                 this.stop(true);
             } else if (!this.isLastPage) {
                 this.typeNextPage();
-            } else {
-                // Next actions
-            }
+            } 
         }, textBox)
         .on('pageend', function () {
             if (this.isLastPage) {
