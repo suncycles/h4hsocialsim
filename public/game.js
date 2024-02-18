@@ -1,25 +1,11 @@
 import {generateMessage} from '/openai.js';
+import {preload} from '/preload.js';
 
 const COLOR_PRIMARY = 0x333CFF;      //box bg
 const COLOR_LIGHT = 0x03a1fc;        //box border
 const COLOR_DARK = 0x0362fc;         //box accent
 class Demo extends Phaser.Scene {
-    preload() { 
-        this.load.scenePlugin({
-            key: 'rexuiplugin',
-            url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
-            sceneKey: 'rexUI'
-        });
-        this.load.image('dude', 'assets/dude.png');
-
-        //arrow that continues text if too long
-        this.load.image('nextPage', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/assets/images/arrow-down-left.png');
-        this.load.image('bgImage', 'assets/bg.webp');
-        this.load.image('npc', 'assets/dude.png');
-        this.load.image('npc_face', 'assets/dude_face.png');
-        this.load.image('npc_1', 'assets/dude1.png');
-        this.load.image('fairy', 'assets/fairy.png');
-    }
+    preload = preload;
 
     create() {
         const content = 'test string';
