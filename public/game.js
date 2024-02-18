@@ -20,6 +20,7 @@ class Demo extends Phaser.Scene {
     }
 
     create() {
+        
         const content = 'test string';
         this.add.image(400, 300, 'bgImage');
         this.add.image(500, 300, 'npc').setScale(0.2);
@@ -40,6 +41,9 @@ class Demo extends Phaser.Scene {
             alpha: 0.75,
         })
             .start(content, 50);
+    
+        this.scale.displaySize.setAspectRatio( width/height );
+        this.scale.refresh();
     }
 
     update() { }
@@ -150,18 +154,11 @@ var getBBcodeText = function (scene, wrapWidth, fixedWidth, fixedHeight) {
 
 var config = {
     type: Phaser.AUTO,
-    parent: 'phaser-example',
-    width: window.innerWidth,
-    height: window.innerHeight,
     scale: {
-        mode: Phaser.Scale.FIT,
-        autoCenter: Phaser.Scale.CENTER_BOTH,
+        mode: Phaser.Scale.AUTO,
+        width: window.innerWidth,
+        height: window.innerHeight
     }, 
-    style: {
-        padding: 0,
-        margin: 0,
-        border: 0,
-    },
     scene: Demo
 };
 
