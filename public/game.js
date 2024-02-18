@@ -1,6 +1,5 @@
 import {generateMessage} from '/openai.js';
 import {preload} from '/preload.js';
-import {grader} from '/AI-GraderCall.js';
 import {vw} from '/helper.js';
 
 const COLOR_PRIMARY = 0x333CFF;      //box bg
@@ -252,7 +251,29 @@ async function conversation() {
     } catch (error) {
         console.error("Error:", error);
     }
-    return [allAISent, allUserSent];
+    const gradePrompt =                // Starting prompt for getting grades for responses()
+    {
+        role: "user",
+        content: "From a scale of one (lowest) to ten (highest), grade the " + maxConverLen + " user (not assistant-based) responses throughout the whole conversation based on social appropriateness with a brief statement for each grade to inform the user. Use format: #.[question number] (user response) - [rating]/10 - reasoning"
+    };
+    startPrompt.push(gradePrompt);
+    const response = await generateMessage(startPrompt);
+    const provGrade = response[0].message.content;
+    console.log(provGrade);
+
+    const numberPattern = /\d+/g; // Match one or more digits
+    const numbers = provGrade.match(numberPattern);
+    console.log(numbers);
+    let i = 1;
+    let averageGrade = 0;
+    let max = numbers.length / 3;
+    for (i; i <= max; i++) {
+        averageGrade += parseInt(numbers[i * 3 - 2]);
+        console.log(averageGrade);
+    }
+    averageGrade = averageGrade / max;
+    console.log(averageGrade);
+    return [allAISent, allUserSent, averageGrade];
 }
 // Updates main textbox with animation
 function updateTextBox(textBox, newText) {
