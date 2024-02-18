@@ -11,6 +11,7 @@ export async function fairySentence(AIResponse) {
         }];
         const response = await generateMessage(fairyPrompt);            // Gets AI response from API in openai.js
         const provSentence = response[0].message.content;
+        console.count("provsentence inside fairyhelper:"+provSentence);
         return provSentence;
     }
     catch (error) {
