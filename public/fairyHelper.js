@@ -3,7 +3,7 @@ import {generateMessage} from '/openai.js';
 
 export async function fairySentence(AIResponse) {
     try {
-        let promptToAI = "provide a child a brief suggestion (8 words or less) for a possible way to respond to the following message (start by saying something like 'try saying'): " + AIResponse;
+        let promptToAI = "provide a child a brief suggestion (12 words or less) for a clever way to respond to the following message (start by saying something like 'A good response is'): " + AIResponse;
         const fairyPrompt = [                // Starting prompt for conversation()
         {
             role: "user",
