@@ -57,7 +57,7 @@ class Demo extends Phaser.Scene {
             wrapWidth: window.innerWidth/2.5,
             fixedWidth: window.innerWidth/2.5,
             fixedHeight: 65,
-            title: 'Dude',
+            title: 'Gnomey',
             alpha: 0.75,
         })
             .start(content, 50);
