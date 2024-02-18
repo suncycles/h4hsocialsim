@@ -311,7 +311,7 @@ var createTextBox = function (scene, x, y, config) {
 
         text: getBBcodeText(scene, wrapWidth, fixedWidth, fixedHeight),
 
-        action: scene.add.image(0, 0, 'nextPage').setTint(COLOR_LIGHT).setVisible(false),
+        action: scene.add.image(0, 0, 'nextPage').setTint(COLOR_LIGHT).setVisible(TextTrackCue),
 
         title: (titleText) ? scene.add.text(0, 0, titleText, { fontSize: '24px', }) : undefined,
 
@@ -336,6 +336,7 @@ var createTextBox = function (scene, x, y, config) {
         .on('pointerdown', function () {
             var icon = this.getElement('action').setVisible(false);
             this.resetChildVisibleState(icon);
+            console.log(this.isTyping);
             if (this.isTyping) {
                 this.stop(true);
             } else if (!this.isLastPage) {
