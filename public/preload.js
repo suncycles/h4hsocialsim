@@ -13,4 +13,5 @@ export function preload() {
     this.load.image('npc_face', 'assets/dude_face.png');
     this.load.image('npc_1', 'assets/dude1.png');
     this.load.image('fairy', 'assets/fairy.png');
+    this.load.image('char', 'assets/pixel_dude.png');
 }
