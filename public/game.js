@@ -47,7 +47,8 @@ class Demo extends Phaser.Scene {
 
         // fairy dialogue box
         fairyText = createTextBox(this, window.innerWidth - vw(15), window.innerHeight /2, {
-            wrapWidth: 500,
+            fixedWidth: 200,
+            wrapWidth: 200,
             alpha: 0.5,
         })
             .start(content, 50);
@@ -219,7 +220,19 @@ async function conversation() {
                 role: "assistant",
                 content: provSentence
             };
-            let fairyHelp = fairySentence(provSentence);                                       // Fairy suggested sentence
+            var fairyHelp = fairySentence(provSentence); 
+            const content = '';
+            var genContent;
+            
+            fairySentence(provSentence).then((fairyHelp)=>{
+                genContent = fairyHelp;
+                console.log(genContent);
+                updateTextBox(fairyText, genContent);
+            })
+            console.log("fairy sentence:"+fairyHelp);
+            console.log("provided sentence:"+provSentence);
+
+            // Fairy suggested sentence
             const closePromise = new Promise(resolve => {
                 const interval = setInterval(() => {
                     if (isTextInputted === 1) {
@@ -231,6 +244,8 @@ async function conversation() {
                 }, 100); // Check every 100 milliseconds
             });
             await closePromise; // Wait for user input
+
+            var genContent;
             
             const userSent = userTextHolder;
             allUserSent[converLen] = userSent;
@@ -251,11 +266,13 @@ async function conversation() {
     } catch (error) {
         console.error("Error:", error);
     }
+
     const gradePrompt =                // Starting prompt for getting grades for responses()
     {
         role: "user",
         content: "From a scale of one (lowest) to ten (highest), grade the " + maxConverLen + " user (not assistant-based) responses throughout the whole conversation based on social appropriateness with a brief statement for each grade to inform the user. Use format: #.[question number] (user response) - [rating]/10 - reasoning. Do not include the question number twice in your response"
     };
+
     startPrompt.push(gradePrompt);
     const response = await generateMessage(startPrompt);
     const provGrade = response[0].message.content;
@@ -276,7 +293,7 @@ async function conversation() {
 // Updates main textbox with animation
 function updateTextBox(textBox, newText) {
     let currentIndex = 0;
-    if(textBox = charText) {
+    if(textBox == charText) {
         char_sprite.play('animateChar');
     }
 
@@ -311,7 +328,7 @@ var createTextBox = function (scene, x, y, config) {
 
         text: getBBcodeText(scene, wrapWidth, fixedWidth, fixedHeight),
 
-        action: scene.add.image(0, 0, 'nextPage').setTint(COLOR_LIGHT).setVisible(TextTrackCue),
+        action: scene.add.image(0, 0, 'nextPage').setTint(COLOR_LIGHT).setVisible(true),
 
         title: (titleText) ? scene.add.text(0, 0, titleText, { fontSize: '24px', }) : undefined,
 
