@@ -20,13 +20,8 @@ class Demo extends Phaser.Scene {
     }
 
     create() {
-        
         const content = 'test string';
-        var imageWidth = this.textures.get('bgImage').getSourceImage().width;
-        var imageHeight = this.textures.get('bgImage').getSourceImage().height;
-        console.log(imageWidth);
-        console.log(window.innerWidth);
-        console.log(window.innerWidth/imageWidth);
+        let imageWidth = this.textures.get('bgImage').getSourceImage().width;
         this.add.image(window.innerWidth / 2, window.innerHeight / 2, 'bgImage').setScale(window.innerWidth/imageWidth);
         this.add.image(500, 300, 'npc').setScale(0.2);
         //this.add.image(400, 300, 'dude');
@@ -34,6 +29,7 @@ class Demo extends Phaser.Scene {
         createTextBox(this, 100, 100, {
             wrapWidth: 500,
             alpha: 0.5,
+            // icon: 'npc_face',
         })
             .start(content, 50);
 
@@ -44,6 +40,7 @@ class Demo extends Phaser.Scene {
             fixedHeight: 65,
             title: 'Title',
             alpha: 0.75,
+            icon: 'npc_face'
         })
             .start(content, 50);
     }
@@ -58,6 +55,7 @@ var createTextBox = function (scene, x, y, config) {
     var fixedHeight = GetValue(config, 'fixedHeight', 0);
     var titleText = GetValue(config, 'title', undefined);
     var alphaValue = GetValue(config, 'alpha', 0);
+    var iconImg = GetValue(config, 'icon', undefined);
 
 
     var textBox = scene.rexUI.add.textBox({
@@ -67,7 +65,7 @@ var createTextBox = function (scene, x, y, config) {
         background: scene.rexUI.add.roundRectangle({ radius: 20, color: COLOR_PRIMARY, strokeColor: COLOR_LIGHT, strokeWidth: 2 }).setAlpha(alphaValue),
 
         // icon: scene.rexUI.add.roundRectangle({ radius: 20, color: COLOR_DARK }),
-        icon: scene.add.image(150,150,"npc_face").setScale(0.5),
+        icon: (iconImg) ? scene.add.image(150,150,iconImg).setScale(0.5) : scene.rexUI.add.roundRectangle({ radius: 20, color: COLOR_DARK }),
 
         text: getBBcodeText(scene, wrapWidth, fixedWidth, fixedHeight),
 
@@ -162,7 +160,7 @@ var config = {
         height: window.innerHeight
     }, 
     backgroundColor: "red",
-    
+
     scene: Demo
 };
 
