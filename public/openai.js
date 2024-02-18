@@ -1,13 +1,7 @@
-// openai request handling
+require('dotenv').config();       // Gets API key from local device
 
-export async function generateMessage(prompt) {
-
-  if (!prompt || typeof prompt !== 'string') {
-    return 'Please provide a valid prompt.';
-  }
-
-  const apiKey = 'api-key';
-
+async function generateMessage(prompt) {
+  const apiKey = process.env.OPENAI_API_KEY;
   try {
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -17,13 +11,13 @@ export async function generateMessage(prompt) {
       },
       body: JSON.stringify({
         model: 'gpt-3.5-turbo',
-        messages: [{"role": "user", "content": prompt}],
-        max_tokens: 50 // Specify any other parameters as needed
+        messages: prompt,
+        max_tokens: 50
       })
     });
 
     const data = await response.json();
-    const AIResponse = data.choices[0].message.content;
+    const AIResponse = data.choices;
     return AIResponse;
   } catch (error) {
     console.error('Error:', error);
@@ -31,4 +25,4 @@ export async function generateMessage(prompt) {
   }
 }
 
-
+module.exports = generateMessage
