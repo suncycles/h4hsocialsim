@@ -1,8 +1,8 @@
-require('dotenv').config();       // Gets API key from local device
-
-async function generateMessage(prompt) {
+async function generateMessage(startPrompt) {
   const apiKey = process.env.OPENAI_API_KEY;
+
   try {
+    
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -11,7 +11,7 @@ async function generateMessage(prompt) {
       },
       body: JSON.stringify({
         model: 'gpt-3.5-turbo',
-        messages: prompt,
+        messages: startPrompt,
         max_tokens: 50
       })
     });
