@@ -157,6 +157,11 @@ var config = {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
     }, 
+    style: {
+        padding: 0,
+        margin: 0,
+        border: 0,
+    },
     scene: Demo
 };
 
