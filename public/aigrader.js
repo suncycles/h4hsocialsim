@@ -26,7 +26,4 @@ export async function generateGrade(sentToGrade) {
       return 'An error occurred while generating the response.';
     }
   }
-  export async function generateTestMessage(sentToGrade) {
-    return 'this is test dialogue';
-  }
   
