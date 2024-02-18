@@ -4,8 +4,9 @@ import {preload} from '/preload.js';
 const COLOR_PRIMARY = 0x333CFF;      //box bg
 const COLOR_LIGHT = 0x03a1fc;        //box border
 const COLOR_DARK = 0x0362fc;         //box accent
+
 var fairyText;
-var dudeText;
+var charText;
 
 class Demo extends Phaser.Scene {
     preload = preload;
@@ -18,18 +19,18 @@ class Demo extends Phaser.Scene {
         console.log(window.innerWidth);
         console.log(window.innerWidth/imageWidth);
         this.add.image(window.innerWidth / 2, window.innerHeight / 2, 'bgImage').setScale(window.innerWidth/imageWidth);
-        //this.add.image(700, 350, 'npc').setScale(0.45);
-        this.add.image(700, 340, 'npc_1').setScale(0.45);
-        //this.add.image(400, 300, 'dude');
+        this.add.image(700, 350, 'char').setScale(0.45);
+        //this.add.image(700, 340, 'npc_1').setScale(0.45);
+
         // top box w/ no fixed width or height
         fairyText = createTextBox(this, 100, 100, {
             wrapWidth: 500,
             alpha: 0.5,
         })
             .start(content, 50);
-
+            this.add.image(150, 150, 'fairy').setScale(1.1);
         //bottom box
-        dudeText = createTextBox(this, 100, 400, {
+        charText = createTextBox(this, 100, 400, {
             wrapWidth: 500,
             fixedWidth: 500,
             fixedHeight: 65,
@@ -38,13 +39,17 @@ class Demo extends Phaser.Scene {
         })
             .start(content, 50);
         
-        this.add.image(150, 150, 'fairy').setScale(1.1);
+        
     }
 
     update() {
-        fairyText.text = 'updated text';
         
     }
+}
+
+function updateTextBox(textBox, newText) {
+    textBox.text = newText;
+    textBox.layout();
 }
 
 const GetValue = Phaser.Utils.Objects.GetValue;

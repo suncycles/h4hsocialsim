@@ -40,6 +40,7 @@ async function conversation() {
     } catch (error) {
         console.error("Error:", error);
     }
+    return [allAISent, allUserSent]; // Access with const [array1, array2] = conversation();
 }
 
 conversation();
