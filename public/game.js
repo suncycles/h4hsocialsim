@@ -17,8 +17,8 @@ const startPrompt = [                // Starting prompt for conversation()
     }
 ];
 
-let converLen = 0;
-const maxConverLen = 4; // Determines conversation length in conversation()
+let converLen = 0;      // Initializes lower boundary for conversative loop
+const maxConverLen = 4; // Determines conversation length in conversation() [can be adjusted for longer/shorter conversations]
 
 var fairyText;
 var charText;
@@ -208,7 +208,7 @@ var CreateButton = function (scene) {
 // Handles entire game cycle
 async function conversation() {
     try {
-        while (converLen < maxConverLen) {
+        while (converLen < maxConverLen) {                                  // Loops until conversation length (AI and user each count as 1) is at desired max
             
             const response = await generateMessage(startPrompt);            // Gets AI response from API in openai.js
             const provSentence = response[0].message.content;
@@ -269,7 +269,7 @@ async function conversation() {
 
     const gradePrompt =                // Starting prompt for getting grades for responses()
     {
-        role: "user",
+        role: "user",                  // Defines grading prompt provided to OpenAI
         content: "From a scale of one (lowest) to ten (highest), grade the " + maxConverLen + " user (not assistant-based) responses throughout the whole conversation based on social appropriateness with a brief statement for each grade to inform the user. Use format: #.[question number] (user response) - [rating]/10 - reasoning. Do not include the question number twice in your response"
     };
 
@@ -288,7 +288,7 @@ async function conversation() {
         averageGrade += parseInt(numbers[i * 3 - 2]);
     }
     averageGrade = averageGrade / max;
-    return [allAISent, allUserSent, averageGrade];
+    return [allAISent, allUserSent, averageGrade];          // Outputs array of all AI sentences, array of user sentences, and the average user sentence score
 }
 // Updates main textbox with animation
 function updateTextBox(textBox, newText) {

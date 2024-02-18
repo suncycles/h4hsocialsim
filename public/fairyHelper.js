@@ -1,3 +1,4 @@
+// Creates the helpful/guiding message displayed by the fairy
 import {generateMessage} from '/openai.js';
 
 export async function fairySentence(AIResponse) {
