@@ -2,7 +2,7 @@ async function generateMessage(startPrompt) {
   const apiKey = process.env.OPENAI_API_KEY;
 
   try {
-    
+      
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -19,7 +19,8 @@ async function generateMessage(startPrompt) {
     const data = await response.json();
     const AIResponse = data.choices;
     return AIResponse;
-  } catch (error) {
+  } 
+  catch (error) {
     console.error('Error:', error);
     return 'An error occurred while generating the response.';
   }

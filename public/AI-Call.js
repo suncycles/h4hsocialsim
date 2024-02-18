@@ -40,8 +40,6 @@ async function conversation() {
     } catch (error) {
         console.error("Error:", error);
     }
-    console.log(allAISent);
-    console.log(allUserSent);
 }
 
 conversation();
