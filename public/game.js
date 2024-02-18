@@ -41,9 +41,6 @@ class Demo extends Phaser.Scene {
             alpha: 0.75,
         })
             .start(content, 50);
-    
-        this.scale.displaySize.setAspectRatio( width/height );
-        this.scale.refresh();
     }
 
     update() { }
